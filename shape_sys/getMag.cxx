@@ -125,11 +125,49 @@ void getSysList(TTree *tree, TString anchorVar, std::vector<TString> &sysList){
     if (bname.IsNull()) { continue; }
     //if (bname=="Nominal") { continue; } //cout<<bname<<endl;
 
-    sysList.push_back(bname);
+    sysList.push_back(bname); cout<<bname<<endl;
   }
 }
 
+void getSysList(TString file, std::vector<TString> &sysList){
+  TFile *f1 = TFile::Open(file);
+  for(auto k : *f1->GetListOfKeys()) { // refer to io/loopdir11.C
+    TKey *key = static_cast<TKey*>(k);
+    TClass *cl = gROOT->GetClass(key->GetClassName());
+    if (!cl->InheritsFrom("TTree")) continue;
+    TString treeName = k->GetName(); cout<<treeName<<endl;
+    sysList.push_back(treeName);
+  }
+}
+
+bool sysExistInFile(TString file, TString sysName){
+  TFile *f1 = TFile::Open(file);
+  for(auto k : *f1->GetListOfKeys()) { // refer to io/loopdir11.C
+    TKey *key = static_cast<TKey*>(k);
+    TClass *cl = gROOT->GetClass(key->GetClassName());
+    if (!cl->InheritsFrom("TTree")) continue;
+    TString treeName = k->GetName(); cout<<treeName<<endl;
+    if(treeName.Contains(sysName)) return true;
+  }
+  return false;
+}
+
 map<TString,float> lumi;
+
+bool sysExistInAllFiles(vector<std::string> files, TString sysName){
+  bool isExitInAllFiles = true;
+
+  for(auto camp = lumi.begin(); camp != lumi.end(); camp++){
+    TString fpath = "";
+    for(auto f : files){
+      TString filepath = f.data();
+      if(f.find(camp->first) == std::string::npos) continue; // to select mc name
+      fpath = filepath; cout<<"check if sys "<<sysName<<" exist in file : "<<fpath<<endl;
+      if(!sysExistInFile(fpath, sysName)) isExitInAllFiles = false;
+    }  
+  }
+  return isExitInAllFiles;
+}
 
 void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<std::string> fpaths, map<TString, pair<float, float>> OObins = {{"full", make_pair(-99999, 99999)}}, bool isVBF = false, map<TString, double> d_tildes = {{"SM", 0.}}){
   TString id = Form("%i", mcID);
@@ -157,28 +195,28 @@ void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<
 
     double sumOfWeights = getSumOfWeights(mcID, f_w); cout<<sumOfWeights<<endl;
 
-    TTree *tree = (TTree*) f_w->Get("output");
+    TTree *tree = (TTree*) f_w->Get(syst);
 
     Int_t N_j_30,N_photon,cutflow,Category;
     Float_t m_yy,pT_y1,pT_y2,m_jj_30,DeltaEta_jj,Zepp,oo1,oo2,WeightDtilde1,WeightDtilde2,weight,xsec_kF_eff,total_weights;
     Bool_t isDalitz,isPassedIsolation,isPassedPID,isPassedTriggerMatch,isPassed;
   
-    tree->SetBranchAddress(syst+".Category", &Category);
-    tree->SetBranchAddress(syst+".isPassed", &isPassed);
-    tree->SetBranchAddress(syst+".m_yy", &m_yy);
-    tree->SetBranchAddress(syst+".N_j_30", &N_j_30);
-    tree->SetBranchAddress(syst+".m_jj_30", &m_jj_30);
-    tree->SetBranchAddress(syst+".DeltaEta_jj", &DeltaEta_jj);
-    tree->SetBranchAddress(syst+".Zepp", &Zepp);
-    tree->SetBranchAddress(syst+".oo1", &oo1);
-    tree->SetBranchAddress(syst+".oo2", &oo2);
-    tree->SetBranchAddress(syst+".weight", &weight);
-    tree->SetBranchAddress("xsec_kF_eff", &xsec_kF_eff);
-    tree->SetBranchAddress("isDalitz", &isDalitz);
+    tree->SetBranchAddress(syst+"_catCoup_XGBoost_ttH", &Category);
+    tree->SetBranchAddress(syst+"_isPassed", &isPassed);
+    tree->SetBranchAddress(syst+"_m_yy", &m_yy);
+    tree->SetBranchAddress(syst+"_N_j_30", &N_j_30);
+    tree->SetBranchAddress(syst+"_m_jj_30", &m_jj_30);
+    tree->SetBranchAddress(syst+"_DeltaEta_jj", &DeltaEta_jj);
+    tree->SetBranchAddress(syst+"_Zepp", &Zepp);
+    tree->SetBranchAddress(syst+"_oo1", &oo1);
+    tree->SetBranchAddress(syst+"_oo2", &oo2);
+    tree->SetBranchAddress(syst+"_weight_catCoup_XGBoost_ttH", &weight);
+    tree->SetBranchAddress(syst+"_xsec_kF_eff", &xsec_kF_eff);
+    tree->SetBranchAddress(syst+"_isDalitz", &isDalitz);
 
     if(isVBF){
-      tree->SetBranchAddress("WeightDtilde1", &WeightDtilde1);
-      tree->SetBranchAddress("WeightDtilde2", &WeightDtilde2);
+      tree->SetBranchAddress(syst+"_WeightDtilde1", &WeightDtilde1);
+      tree->SetBranchAddress(syst+"_WeightDtilde2", &WeightDtilde2);
     }
   
     Long64_t endentry = tree->GetEntries();
@@ -242,7 +280,9 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
       RooRealVar alpha2("alpha2","",0,5);
       HggTwoSidedCBPdf DSCB_myy("sig","signal component",myy,mean,sigma,alpha1,n1,alpha2,n2);
 
-      DSCB_myy.fitTo(dh_myy_sig);
+      RooFitResult* result = DSCB_myy.fitTo(dh_myy_sig, Save(kTRUE));
+      if(result->status()!=0) cout<<"WARNING : fit status != 0"<<endl;
+
       para[sys+"_"+d->first+"_"+bin->first].push_back(mean.getVal());
       para[sys+"_"+d->first+"_"+bin->first].push_back(sigma.getVal());
       para[sys+"_"+d->first+"_"+bin->first].push_back(alpha1.getVal());
@@ -257,8 +297,8 @@ void getMag(){
 
   // config maps
   lumi["mc16a"] = 36207.66;
-  lumi["mc16d"] = 44307.4;
-  lumi["mc16e"] = 58450.1;
+  //lumi["mc16d"] = 44307.4;
+  //lumi["mc16e"] = 58450.1;
 
   //vector<int> v_mcID;
   //v_mcID.push_back(346214);
@@ -307,7 +347,7 @@ void getMag(){
 
 
   // file path list
-  TString dirpath = "/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys";
+  TString dirpath = "/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -320,11 +360,16 @@ void getMag(){
     std::vector<std::string> fs = getDirBinsSortedPath(path_str+d+"/");
     for(auto f : fs){
       if(f==".") continue;
+      if(f.find(".root")==std::string::npos) continue;
       cout<<"f: "<<path_str+"/"+d+"/"+f<<endl;
       files.push_back(path_str+d+"/"+f);
 
     }
   }
+
+  //std::vector<TString> existSysList;
+  //existSysList.clear();
+  //getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/mc16a/343981_ggF_allSys.root", existSysList);
 
   // get syst list
   TFile *f_in = new TFile("sample.root", "read");
@@ -339,6 +384,7 @@ void getMag(){
   delete f_in;
 
   vector<TString> ignoreList;
+  ignoreList.clear();
   //readList(Form("ignore_syst_yield_%i.txt", mcID), ignoreList);
 
   map<TString, bool> sysList_noUD;
@@ -380,6 +426,7 @@ void getMag(){
 
   for(auto sys : sysList_noUD){
     if(sys.first=="Nominal") continue;
+    if(!sysExistInAllFiles(files, sys.first)) continue;
     cout<<"======="<<sys.first<<"========"<<endl;
     if(sys.second){
       getFitPara(para_SysUp, files, sys.first+"__1up", d_map, bins);
