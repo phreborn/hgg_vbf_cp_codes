@@ -125,7 +125,45 @@ void getSysList(TTree *tree, TString anchorVar, std::vector<TString> &sysList){
   }
 }
 
+void getSysList(TString file, std::vector<TString> &sysList){
+  TFile *f1 = TFile::Open(file);
+  for(auto k : *f1->GetListOfKeys()) { // refer to io/loopdir11.C
+    TKey *key = static_cast<TKey*>(k);
+    TClass *cl = gROOT->GetClass(key->GetClassName());
+    if (!cl->InheritsFrom("TTree")) continue;
+    TString treeName = k->GetName(); cout<<treeName<<endl;
+    sysList.push_back(treeName); 
+  }
+}
+
+bool sysExistInFile(TString file, TString sysName){
+  TFile *f1 = TFile::Open(file);
+  for(auto k : *f1->GetListOfKeys()) { // refer to io/loopdir11.C
+    TKey *key = static_cast<TKey*>(k);
+    TClass *cl = gROOT->GetClass(key->GetClassName());
+    if (!cl->InheritsFrom("TTree")) continue;
+    TString treeName = k->GetName(); cout<<treeName<<endl;
+    if(treeName.Contains(sysName)) return true;
+  }
+  return false;
+}
+
 map<TString,float> lumi;
+
+bool sysExistInAllFiles(vector<std::string> files, TString sysName){
+  bool exitInAllFiles = true;
+
+  for(auto camp = lumi.begin(); camp != lumi.end(); camp++){
+    TString fpath = "";
+    for(auto f : files){
+      TString filepath = f.data();
+      if(f.find(camp->first) == std::string::npos) continue; // to select mc name
+      fpath = filepath; cout<<"check if sys "<<sysName<<" exist in file : "<<fpath<<endl;
+      if(!sysExistInFile(fpath, sysName)) exitInAllFiles = false;
+    }  
+  }
+  return exitInAllFiles;
+}
 
 void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<std::string> fpaths, map<TString, pair<float, float>> OObins = {{"full", make_pair(-99999, 99999)}}, bool isVBF = false, map<TString, double> d_tildes = {{"SM", 0.}}){
   TString id = Form("%i", mcID);
@@ -153,28 +191,28 @@ void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<
 
     double sumOfWeights = getSumOfWeights(mcID, f_w); cout<<sumOfWeights<<endl;
 
-    TTree *tree = (TTree*) f_w->Get("output");
+    TTree *tree = (TTree*) f_w->Get(syst);
 
     Int_t N_j_30,N_photon,cutflow,Category;
     Float_t m_yy,pT_y1,pT_y2,m_jj_30,DeltaEta_jj,Zepp,oo1,oo2,WeightDtilde1,WeightDtilde2,weight,xsec_kF_eff,total_weights;
     Bool_t isDalitz,isPassedIsolation,isPassedPID,isPassedTriggerMatch,isPassed;
   
-    tree->SetBranchAddress(syst+".Category", &Category);
-    tree->SetBranchAddress(syst+".isPassed", &isPassed);
-    tree->SetBranchAddress(syst+".m_yy", &m_yy);
-    tree->SetBranchAddress(syst+".N_j_30", &N_j_30);
-    tree->SetBranchAddress(syst+".m_jj_30", &m_jj_30);
-    tree->SetBranchAddress(syst+".DeltaEta_jj", &DeltaEta_jj);
-    tree->SetBranchAddress(syst+".Zepp", &Zepp);
-    tree->SetBranchAddress(syst+".oo1", &oo1);
-    tree->SetBranchAddress(syst+".oo2", &oo2);
-    tree->SetBranchAddress(syst+".weight", &weight);
-    tree->SetBranchAddress("xsec_kF_eff", &xsec_kF_eff);
-    tree->SetBranchAddress("isDalitz", &isDalitz);
+    tree->SetBranchAddress(syst+"_catCoup_XGBoost_ttH", &Category);
+    tree->SetBranchAddress(syst+"_isPassed", &isPassed);
+    tree->SetBranchAddress(syst+"_m_yy", &m_yy);
+    tree->SetBranchAddress(syst+"_N_j_30", &N_j_30);
+    tree->SetBranchAddress(syst+"_m_jj_30", &m_jj_30);
+    tree->SetBranchAddress(syst+"_DeltaEta_jj", &DeltaEta_jj);
+    tree->SetBranchAddress(syst+"_Zepp", &Zepp);
+    tree->SetBranchAddress(syst+"_oo1", &oo1);
+    tree->SetBranchAddress(syst+"_oo2", &oo2);
+    tree->SetBranchAddress(syst+"_weight_catCoup_XGBoost_ttH", &weight);
+    tree->SetBranchAddress(syst+"_xsec_kF_eff", &xsec_kF_eff);
+    tree->SetBranchAddress(syst+"_isDalitz", &isDalitz);
 
     if(isVBF){
-      tree->SetBranchAddress("WeightDtilde1", &WeightDtilde1);
-      tree->SetBranchAddress("WeightDtilde2", &WeightDtilde2);
+      tree->SetBranchAddress(syst+"_WeightDtilde1", &WeightDtilde1);
+      tree->SetBranchAddress(syst+"_WeightDtilde2", &WeightDtilde2);
     }
   
     Long64_t endentry = tree->GetEntries();
@@ -214,15 +252,15 @@ void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<
 void getMag(){
 
   // config maps
-  lumi["mc16a"] = 36207.66;
-  lumi["mc16d"] = 44307.4;
+  //lumi["mc16a"] = 36207.66;
+  //lumi["mc16d"] = 44307.4;
   lumi["mc16e"] = 58450.1;
 
   vector<int> v_mcID;
-  v_mcID.push_back(346214);
-  //v_mcID.push_back(343981);
-  int mcID = 346214;
-  //int mcID = 343981;
+  //v_mcID.push_back(346214);
+  v_mcID.push_back(343981);
+  //int mcID = 346214;
+  int mcID = 343981;
 
   map<TString, double> d_map;
   d_map["m00"] = 0.;
@@ -256,22 +294,16 @@ void getMag(){
   d_map["p20"] = 0.20;
 
   map<TString, pair<float, float>> bins;
-  bins["b1"] = make_pair(-999999999, -3);
-  bins["b2"] = make_pair(-3, -1.5);
-  bins["b3"] = make_pair(-1.5, -1);
-  bins["b4"] = make_pair(-1, -0.5);
-  bins["b5"] = make_pair(-0.5, 0);
-  bins["b6"] = make_pair(0, 0.5);
-  bins["b7"] = make_pair(0.5, 1);
-  bins["b8"] = make_pair(1, 1.5);
-  bins["b9"] = make_pair(1.5, 3);
-  bins["b10"] = make_pair(3, 99999999);
-
+  bins["b1"] = make_pair(-999999999, -2);
+  bins["b2"] = make_pair(-2, -1);
+  bins["b3"] = make_pair(-1, 0);
+  bins["b4"] = make_pair(0, 1);
+  bins["b5"] = make_pair(1, 2);
+  bins["b6"] = make_pair(2, 99999999);
 
 
   // file path list
-  TString dirpath = "ntuple_syst/";
-//  TString dirpath = "../shape_sys/ntuple_syst/";
+  TString dirpath = "/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -284,27 +316,35 @@ void getMag(){
     std::vector<std::string> fs = getDirBinsSortedPath(path_str+d+"/");
     for(auto f : fs){
       if(f==".") continue;
+      if(f.find(".root")==std::string::npos) continue;
       cout<<"f: "<<path_str+"/"+d+"/"+f<<endl;
       files.push_back(path_str+d+"/"+f);
 
     }
   }
 
-  // get syst list
-  TFile *f_in = new TFile("sample.root", "read");
-//  TFile *f_in = new TFile("../shape_sys/sample.root", "read");
-
-  TTree *tree = (TTree*) f_in->Get("output");
-
   std::vector<TString> sysList;
   sysList.clear();
+  getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/343981_ggF_allSys.root", sysList);
+  //getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/346214_VBF_allSys.root", sysList);
+  cout<<endl<<"sys list got"<<endl;
 
-  getSysList(tree, "m_yy", sysList);
+  // get syst list
+  ////TFile *f_in = new TFile("sample.root", "read");
+  //TFile *f_in = new TFile("../shape_sys/sample.root", "read");
 
-  delete f_in;
+  //TTree *tree = (TTree*) f_in->Get("output");
+
+  //std::vector<TString> sysList;
+  //sysList.clear();
+
+  //getSysList(tree, "m_yy", sysList);
+
+  //delete f_in;
 
   vector<TString> ignoreList;
-  readList(Form("ignore_syst_yield_%i.txt", mcID), ignoreList);
+  ignoreList.clear();
+  //readList(Form("ignore_syst_yield_%i.txt", mcID), ignoreList);
 
   map<TString, bool> sysList_noUD;
 
@@ -349,68 +389,71 @@ void getMag(){
         N_nominal[d->first+"_"+bin->first] = histVec["Nominal_"+d->first+"_"+bin->first]->Integral(); cout<<d->first+"_"+bin->first<<","<<N_nominal[d->first+"_"+bin->first]<<endl;
       }
     }
-//    vector<TString> calc_sysList;
-//  
-//    for(auto sys : sysList_noUD){
-//      if(sys.first=="Nominal") continue;
-//      //if(!sys.first.Contains("PRW")&&!sys.first.Contains("JET_EffectiveNP_Detector")&&!sys.first.Contains("MET_SoftTrk_ResoPara")) continue;
-//      cout<<"======="<<sys.first<<"========"<<endl;
-//      if(sys.second){
-//        getMyyHist(histVec, mcID, sys.first+"__1up", files, bins, true, d_tmp);// to delete
-//        getMyyHist(histVec, mcID, sys.first+"__1down", files, bins, true, d_tmp);// to delete
-//        for(auto bin = bins.begin(); bin != bins.end(); bin++){
-//          for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-//            mag_up[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"__1up"+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"UP"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
-//            mag_down[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"__1down"+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"DOWN"<<","<<sys.first<<","<<mag_down[sys.first]<<endl;
-//          }
-//        }
-//      }else {
-//        getMyyHist(histVec, mcID, sys.first, files, bins, true, d_tmp);// to delete
-//        for(auto bin = bins.begin(); bin != bins.end(); bin++){
-//          for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-//            mag_up[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"UP/DOWN"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
-//          }
-//        }
-//      }
-//  
-//      calc_sysList.push_back(sys.first);
-//  
-//      //if((int)calc_sysList.size()>0) break;
-//    }// end syst
-//  
-//  
-//    // fill csv file
-//    for(auto bin = bins.begin(); bin != bins.end(); bin++){
-//      for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-//        ofstream ofsyst(Form("csv/mag_yield_%i_"+d->first+"_"+bin->first+".csv", mcID), ios::out);
-//        if(!ofsyst){
-//          ofsyst.close();
-//          cout<<"error can't open file for record"<<endl;
-//        }
-//  
-//        for(auto sys : calc_sysList){
-//          if(sysList_noUD[sys]) ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+bin->first]<<","<<mag_down[sys+"_"+d->first+"_"+bin->first]<<endl;
-//          else ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+bin->first]<<endl;
-//        }
-//  
-//        ofsyst.close();
-//      }
-//    }
-
-    // fill yields
-    ofstream ofyield("csv/N_yield_%i.csv", ios::out);
-    if(!ofyield){
-      ofyield.close();
-      cout<<"error can't open file for record"<<endl;
-    }
-    for(auto bin = bins.begin(); bin != bins.end(); bin++){
-      if(mcID==343981) ofyield<<"ggH_"+bin->first<<","<<N_nominal["SM_"+bin->first]<<endl;
-      else if(mcID==343981) {
-        for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-          ofyield<<"VBF_"+d->first+"_"+bin->first<<","<<N_nominal[d->first+"_"+bin->first]<<endl;
+    vector<TString> calc_sysList;
+  
+    for(auto sys : sysList_noUD){
+      if(sys.first=="Nominal") continue;
+      //if(!sysExistInAllFiles(files, sys.first)) continue;
+      //if(!sys.first.Contains("PRW")&&!sys.first.Contains("JET_EffectiveNP_Detector")&&!sys.first.Contains("MET_SoftTrk_ResoPara")) continue;
+      cout<<"======="<<sys.first<<"========"<<endl;
+      if(sys.second){
+        getMyyHist(histVec, mcID, sys.first+"__1up", files, bins, true, d_tmp);// to delete
+        getMyyHist(histVec, mcID, sys.first+"__1down", files, bins, true, d_tmp);// to delete
+        for(auto bin = bins.begin(); bin != bins.end(); bin++){
+          for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+            mag_up[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"__1up"+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"UP"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
+            mag_down[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"__1down"+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"DOWN"<<","<<sys.first<<","<<mag_down[sys.first]<<endl;
+          }
+        }
+      }else {
+        getMyyHist(histVec, mcID, sys.first, files, bins, true, d_tmp);// to delete
+        for(auto bin = bins.begin(); bin != bins.end(); bin++){
+          for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+            mag_up[sys.first+"_"+d->first+"_"+bin->first] = (histVec[sys.first+"_"+d->first+"_"+bin->first]->Integral()-N_nominal[d->first+"_"+bin->first])/N_nominal[d->first+"_"+bin->first]; //cout<<"UP/DOWN"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
+          }
         }
       }
+  
+      calc_sysList.push_back(sys.first);
+  
+      //if((int)calc_sysList.size()>0) break;
+    }// end syst
+  
+  
+    // fill csv file
+    for(auto bin = bins.begin(); bin != bins.end(); bin++){
+      for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+        ofstream ofsyst(Form("csv/mag_yield_%i_"+d->first+"_"+bin->first+".csv", mcID), ios::out);
+        if(!ofsyst){
+          ofsyst.close();
+          cout<<"error can't open file for record"<<endl;
+        }
+  
+        for(auto sys : calc_sysList){
+          if(sysList_noUD[sys]) ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+bin->first]<<","<<mag_down[sys+"_"+d->first+"_"+bin->first]<<endl;
+          else ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+bin->first]<<endl;
+        }
+  
+        ofsyst.close();
+      }
     }
+
+//    // fill nominal yields
+//    ofstream ofyield_clear("csv/N_yield.csv", ios::app);
+//    ofyield_clear.close();
+//    ofstream ofyield("csv/N_yield.csv", ios::app);
+//    if(!ofyield){
+//      ofyield.close();
+//      cout<<"error can't open file for record"<<endl;
+//    }
+//    for(auto bin = bins.begin(); bin != bins.end(); bin++){
+//      if(mcID==343981) ofyield<<"ggH_"+bin->first<<","<<N_nominal["SM_"+bin->first]<<endl;
+//      else if(mcID==346214) {// why VBF saved twice?
+//        for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+//          ofyield<<"VBF_"+d->first+"_"+bin->first<<","<<N_nominal[d->first+"_"+bin->first]<<endl;
+//        }
+//      }
+//    }
 
     // release hist heaps in getMyyHist()
     for(auto hist = histVec.begin(); hist != histVec.end(); hist++){

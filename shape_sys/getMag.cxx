@@ -296,9 +296,9 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
 void getMag(){
 
   // config maps
-  lumi["mc16a"] = 36207.66;
+  //lumi["mc16a"] = 36207.66;
   //lumi["mc16d"] = 44307.4;
-  //lumi["mc16e"] = 58450.1;
+  lumi["mc16e"] = 58450.1;
 
   //vector<int> v_mcID;
   //v_mcID.push_back(346214);
@@ -347,7 +347,7 @@ void getMag(){
 
 
   // file path list
-  TString dirpath = "/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/";
+  TString dirpath = "/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -367,21 +367,21 @@ void getMag(){
     }
   }
 
-  //std::vector<TString> existSysList;
-  //existSysList.clear();
-  //getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/mc16a/343981_ggF_allSys.root", existSysList);
-
-  // get syst list
-  TFile *f_in = new TFile("sample.root", "read");
-
-  TTree *tree = (TTree*) f_in->Get("output");
-
   std::vector<TString> sysList;
   sysList.clear();
+  getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16e/343981_ggF_allSys.root", sysList);
 
-  getSysList(tree, "m_yy", sysList);
+  // get syst list
+  //TFile *f_in = new TFile("sample.root", "read");
 
-  delete f_in;
+  //TTree *tree = (TTree*) f_in->Get("output");
+
+  //std::vector<TString> sysList;
+  //sysList.clear();
+
+  //getSysList(tree, "m_yy", sysList);
+
+  //delete f_in;
 
   vector<TString> ignoreList;
   ignoreList.clear();
