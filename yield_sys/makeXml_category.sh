@@ -67,8 +67,8 @@ done
 for id in 346214 ; do
   for d in  $d_tilde ; do
     for b in $bin ; do
-      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${b}.csv";#echo $ifcsv
-      ifcsv_exp="csv/mag_yield_${id}_${d}_${b}.csv";#echo $ifcsv
+      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${b}.csv";
+      ifcsv_exp="csv/mag_yield_${id}_${d}_${b}.csv";
       ifcsv_tmp="csv/tmp_${id}_${d}_${b}.csv"
       > $ifcsv_tmp
       cat $ifcsv_exp >> $ifcsv_tmp
@@ -80,12 +80,18 @@ for id in 346214 ; do
   done
 done
 
-#for id in 343981; do
-#  for b in $bin ; do
-#    ifcsv="csv/mag_yield_${id}_SM_${b}.csv";
-#    ofxml="xml/sample_${id}_SM_${b}.xml";
-#    fillSys $id $ifcsv $ofxml
-#  done
-#done
+for id in 343981; do
+  for b in $bin ; do
+    ifcsv_exp="TheorySys/mag_theory_${id}_SM_${b}.csv";
+    ifcsv_exp="csv/mag_yield_${id}_SM_${b}.csv";
+    ifcsv_tmp="csv/tmp_${id}_SM_${b}.csv"
+    > $ifcsv_tmp
+    cat $ifcsv_exp >> $ifcsv_tmp
+    cat $ifcsv_theo >> $ifcsv_tmp
+    ofxml="xml/sample_${id}_SM_${b}.xml";
+    fillSys $id $ifcsv_tmp $ofxml
+    rm $ifcsv_tmp
+  done
+done
 
 #fillSys $mcID $ifsys $ofsys 
