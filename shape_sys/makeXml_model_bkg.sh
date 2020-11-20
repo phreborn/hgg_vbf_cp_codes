@@ -35,7 +35,7 @@ for d in $d_tilde;do
       echo "<ModelItem Name=\"EXPR::bkgPdf_${b}('exp(((@0/1000-125)/125)*@1+@2*((@0/1000-125)/125)*((@0/1000-125)/125))',:observable:,p1_${b}[${B},-10,10],p2_${b}[${C},-10,10])\"/></Model>" >> $out_xml
       #echo "<ModelItem Name=\"EXPR::bkgPdf_${b}('exp(((@0/1000-125)/125)*@1+@2*((@0/1000-125)/125)*((@0/1000-125)/125))',:observable:,p1_${b}[${B}],p2_${b}[${C}])\"/></Model>" >> $out_xml
     elif [ $pdfType = "Exp" ];then
-      echo "<ModelItem Name=\"EXPR::bkgPdf_${b}('exp(((@0/1000-125)/125)*@1',:observable:,p1_${b}[${B},-10,10])\"/></Model>" >> $out_xml
+      echo "<ModelItem Name=\"EXPR::bkgPdf_${b}('exp(((@0/1000-125)/125)*@1)',:observable:,p1_${b}[${B},-10,10])\"/></Model>" >> $out_xml
     else
       echo Unrecognized PDF type
     fi

@@ -29,6 +29,8 @@ do
   mag_u=$(echo $line | cut -d ',' -f 2)
   mag_d=$(echo $line | cut -d ',' -f 3)
 
+  echo $sys_name
+
   wNum=$(echo $line | sed 's/,/ /g' | wc -w)
 
   ConstrType=""
@@ -82,7 +84,7 @@ done
 
 for id in 343981; do
   for b in $bin ; do
-    ifcsv_exp="TheorySys/mag_theory_${id}_SM_${b}.csv";
+    ifcsv_theo="TheorySys/mag_theory_${id}_SM_${b}.csv";
     ifcsv_exp="csv/mag_yield_${id}_SM_${b}.csv";
     ifcsv_tmp="csv/tmp_${id}_SM_${b}.csv"
     > $ifcsv_tmp
