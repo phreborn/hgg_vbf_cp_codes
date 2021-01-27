@@ -295,6 +295,8 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
 
 void getMag(){
 
+  bool doSys = false;
+
   // config maps
   //lumi["mc16a"] = 36207.66;
   //lumi["mc16d"] = 44307.4;
@@ -369,7 +371,8 @@ void getMag(){
 
   std::vector<TString> sysList;
   sysList.clear();
-  getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16e/343981_ggF_allSys.root", sysList);
+  if(doSys) getSysList("/scratchfs/bes/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16e/343981_ggF_allSys.root", sysList);
+  else sysList.push_back("Nominal");
 
   // get syst list
   //TFile *f_in = new TFile("sample.root", "read");
