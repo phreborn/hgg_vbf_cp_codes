@@ -165,18 +165,25 @@ bool sysExistInAllFiles(vector<std::string> files, TString sysName){
   return isExitInAllFiles;
 }
 
-void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<std::string> fpaths, map<TString, pair<float, float>> OObins = {{"full", make_pair(-99999, 99999)}}, bool isVBF = false, map<TString, double> d_tildes = {{"SM", 0.}}, std::map<TString, std::vector<float>> cats = {{"allBDTCats", {}}}){
+string baseCuts = "";
+string blindCut = "";
+
+void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<std::string> fpaths, map<TString, pair<float, float>> OObins = {{"full", make_pair(-99999, 99999)}}, bool isVBF = false, map<TString, double> d_tildes = {{"SM", 0.}}, std::map<TString, std::string> cats = {{"allBDTCats", ""}}){
   TString id = Form("%i", mcID);
 
-for(auto cat : cats){
-  for(auto bin = OObins.begin(); bin != OObins.end(); bin++){
+  string baseCuts_sys = TString(baseCuts.data()).ReplaceAll("??", syst+"_").Data(); cout<<endl<<baseCuts_sys<<endl;
+
+  map<TString, TH1F*> hists_tmp;
+
+  for(auto cat : cats){
     for(auto d = d_tildes.begin(); d != d_tildes.end(); d++){
-      hists[syst+"_"+d->first+"_"+cat.first+"_"+bin->first] = new TH1F(syst+"_m_yy_"+d->first+"_"+cat.first+"_"+bin->first, "", 550, 105000,160000);
+      hists[syst+"_"+d->first+"_"+cat.first] = new TH1F(syst+"_m_yy_"+d->first+"_"+cat.first, "", 550, 105000,160000);
+      for(auto camp : lumi){
+         hists_tmp[camp.first+"_"+syst+"_"+d->first+"_"+cat.first] = new TH1F(syst+"_m_yy_"+camp.first+"_"+d->first+"_"+cat.first, "", 550, 105000,160000);
+      }
     }
   }
-}
 
-for(auto cat : cats){
   for(auto camp = lumi.begin(); camp != lumi.end(); camp++){
     cout<<camp->first<<endl;
 
@@ -184,7 +191,7 @@ for(auto cat : cats){
 
     for(auto f : fpaths){
       TString filepath = f.data();
-      if(f.find(camp->first) == std::string::npos || f.find(Form("%i", mcID)) == std::string::npos || f.find(cat.first) == std::string::npos) continue; // to select mc name
+      if(f.find(camp->first) == std::string::npos || f.find(Form("%i", mcID)) == std::string::npos) continue; // to select mc name
       fpath = filepath; cout<<fpath<<endl;
     }
 
@@ -194,63 +201,40 @@ for(auto cat : cats){
 
     double sumOfWeights = getSumOfWeights(mcID, f_w); cout<<sumOfWeights<<endl;
 
-    TTree *tree = (TTree*) f_w->Get(syst);
+    TChain ch(syst, syst);
+    ch.Add(fpath);
 
-    Int_t N_j_30,N_photon,cutflow,Category;
-    Float_t m_yy,pT_y1,pT_y2,m_jj_30,DeltaEta_jj,Zepp,oo1,oo2,WeightDtilde1,WeightDtilde2,weight,xsec_kF_eff,total_weights;
-    Bool_t isDalitz,isPassedIsolation,isPassedPID,isPassedTriggerMatch,isPassed;
-  
-    tree->SetBranchAddress(syst+"_catCoup_XGBoost_ttH", &Category);
-    tree->SetBranchAddress(syst+"_isPassed", &isPassed);
-    tree->SetBranchAddress(syst+"_m_yy", &m_yy);
-    tree->SetBranchAddress(syst+"_N_j_30", &N_j_30);
-    tree->SetBranchAddress(syst+"_m_jj_30", &m_jj_30);
-    tree->SetBranchAddress(syst+"_DeltaEta_jj", &DeltaEta_jj);
-    tree->SetBranchAddress(syst+"_Zepp", &Zepp);
-    tree->SetBranchAddress(syst+"_oo1", &oo1);
-    tree->SetBranchAddress(syst+"_oo2", &oo2);
-    tree->SetBranchAddress(syst+"_weight_catCoup_XGBoost_ttH", &weight);
-    tree->SetBranchAddress(syst+"_xsec_kF_eff", &xsec_kF_eff);
-    tree->SetBranchAddress(syst+"_isDalitz", &isDalitz);
+    ROOT::RDataFrame df(ch, {Form("%s_m_yy", syst.Data())});
 
-    if(isVBF){
-      tree->SetBranchAddress(syst+"_WeightDtilde1", &WeightDtilde1);
-      tree->SetBranchAddress(syst+"_WeightDtilde2", &WeightDtilde2);
-    }
-  
-    Long64_t endentry = tree->GetEntries();
-  
-    for(int i = 0; i < endentry; i++){
-      tree->GetEntry(i);
-      if(i==endentry-1) cout<<endentry<<" events processed"<<endl;
-  
-      if(isDalitz==1||isPassed==0) continue;
-      if(N_j_30<2) continue;
-      if(m_jj_30/1000<400) continue;
-      if(DeltaEta_jj>-2&&DeltaEta_jj<2) continue;
-      if(Zepp>5||Zepp<-5) continue;
-      if(Category<11||Category>14) continue;
+    auto df_base = df.Filter(baseCuts_sys);
 
-      float w = camp->second*xsec_kF_eff*weight/sumOfWeights;
-      float wd = 1.;
+    float campLumi = camp->second;
+    auto df_wt = df_base.Define("wt", [&sumOfWeights, &campLumi](float xsec, float weight){ return (float) (campLumi*xsec*weight/sumOfWeights); }, {Form("%s_xsec_kF_eff", syst.Data()), Form("%s_weight_catCoup_XGBoost_ttH", syst.Data())});
 
-      for(auto bin = OObins.begin(); bin != OObins.end(); bin++){
-        double b_l = bin->second.first;
-        double b_r = bin->second.second;
+    for(auto cat : cats){
+      string catCuts_sys = TString(cat.second.data()).ReplaceAll("??", syst+"_").Data();
+      auto df_cat = df_wt.Filter(catCuts_sys);
+      for(auto d = d_tildes.begin(); d != d_tildes.end(); d++){
+        double d_tilde = d->second;
+        TString tsCampSysDtildeCat = camp->first+"_"+syst+"_"+d->first+"_"+cat.first;
+        auto df_wd = df_cat.Define("wd", [&d_tilde, &isVBF](float w1, float w2){ return (float) (isVBF? (1. + w1*d_tilde + w2*d_tilde*d_tilde) : 1.); }, {Form("%s_WeightDtilde1", syst.Data()), Form("%s_WeightDtilde2", syst.Data())});
 
-        if(oo1<b_l || oo1>b_r) continue;
-
-        for(auto d = d_tildes.begin(); d != d_tildes.end(); d++){
-          double d_tilde = d->second;
-          if(isVBF) wd = 1. + WeightDtilde1*d_tilde + WeightDtilde2*d_tilde*d_tilde;
-
-          hists[syst+"_"+d->first+"_"+cat.first+"_"+bin->first]->Fill(m_yy, w*wd); // no campName in hist Key -> merge all camps
-        }// end d_tilde
-      }// end OO bin
-    }// end fill
+        df_wd.Foreach([&hists_tmp, &tsCampSysDtildeCat](float m_yy, float wt, float wd){ hists_tmp[tsCampSysDtildeCat]->Fill(m_yy, wt*wd); }, {Form("%s_m_yy", syst.Data()), "wt", "wd"});
+      }// end d_tilde
+    }// end cat
+    //}// end fill
     delete f_w;
   }// end camp
-}// end cat
+
+  for(auto cat : cats){
+    for(auto d : d_tildes){
+      TString tsSysDtildeCat = syst+"_"+d.first+"_"+cat.first;
+      hists[tsSysDtildeCat]->Clear();
+      for(auto camp : lumi){
+        hists[tsSysDtildeCat]->Add(hists_tmp[camp.first+"_"+tsSysDtildeCat]);
+      }
+    }
+  }
 }
 
 vector<string> readInLines(const char * cfgfilepath){
