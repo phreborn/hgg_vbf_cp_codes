@@ -47,6 +47,8 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
       //canv->SaveAs("plotFit/"+sys+"_"+d->first+"_"+cat.first+"_"+bin->first+".png");
       //delete canv;
 
+      para[sys+"_"+d->first+"_"+cat.first].clear();
+
       para[sys+"_"+d->first+"_"+cat.first].push_back(mean.getVal());
       para[sys+"_"+d->first+"_"+cat.first].push_back(sigma.getVal());
       para[sys+"_"+d->first+"_"+cat.first].push_back(alpha1.getVal());
@@ -58,6 +60,9 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
 }
 
 void getMag(){
+
+  int iSysInit = 1;
+  int iSysFin = 3;
 
   bool doSys = true;
 
@@ -204,10 +209,16 @@ void getMag(){
 
   vector<TString> calc_sysList;
 
+  int testCounter = 0;
   for(auto sys : sysList_noUD){
     if(sys.first=="Nominal") continue;
     if(!sysExistInAllFiles(files, sys.first)) continue;
-    cout<<"======="<<sys.first<<"========"<<endl;
+
+    testCounter++;
+    if(testCounter < iSysInit || testCounter > iSysFin) continue;
+
+    cout<<endl<<"======="<<sys.first<<"========"<<endl;
+
     if(sys.second){
       getFitPara(para_SysUp, files, sys.first+"__1up", d_map, bins, catCuts);
       getFitPara(para_SysDown, files, sys.first+"__1down", d_map, bins, catCuts);
@@ -222,6 +233,11 @@ void getMag(){
           TString sysKey = sys.first+"_"+combName;
           TString upKey = sys.first+"__1up"+"_"+combName;
           TString downKey = sys.first+"__1down"+"_"+combName;
+
+          mu_up[sysKey] = 0.;
+          mu_down[sysKey] = 0.;
+          sigma_up[sysKey] = 0.;
+          sigma_down[sysKey] = 0.;
 
           mu_up[sysKey] = (para_SysUp[upKey][MEAN]-para_Nom[nomKey][MEAN])/para_Nom[nomKey][MEAN];
           mu_down[sysKey] = (para_SysDown[downKey][MEAN]-para_Nom[nomKey][MEAN])/para_Nom[nomKey][MEAN];
@@ -241,6 +257,9 @@ void getMag(){
 
           TString nomKey = "Nominal_"+combName;
           TString sysKey = sys.first+"_"+combName;
+
+          mu_up[sysKey] = 0.;
+          sigma_up[sysKey] = 0.;
 
           mu_up[sysKey] = (para_SysUp[sysKey][MEAN]-para_Nom[nomKey][MEAN])/para_Nom[nomKey][MEAN];
 
