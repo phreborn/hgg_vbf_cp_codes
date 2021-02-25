@@ -61,8 +61,8 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
 
 void getMag(){
 
-  int iSysInit = 1;
-  int iSysFin = 3;
+  int iSysInit = 11;
+  int iSysFin = 12;
 
   bool doSys = true;
 
@@ -75,9 +75,9 @@ void getMag(){
   readConfigFile(config.data(), "blindSel", blindCut);
 
   // config maps
-  //lumi["mc16a"] = 36207.66;
+  lumi["mc16a"] = 36207.66;
   //lumi["mc16d"] = 44307.4;
-  lumi["mc16e"] = 58450.1;
+  //lumi["mc16e"] = 58450.1;
 
   //vector<int> v_mcID;
   //v_mcID.push_back(346214);
@@ -153,7 +153,7 @@ void getMag(){
 
   std::vector<TString> sysList;
   sysList.clear();
-  if(doSys) getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16e/343981_ggF_allSys.root", sysList);
+  if(doSys) getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16a/343981_ggF_allSys.root", sysList);
   else sysList.push_back("Nominal");
 
   // get syst list

@@ -3,11 +3,11 @@
 declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["aS"]="logn")
 echo ${!mapCtrType[*]}
 
-d_tilde=$(ls csv/ | grep b3 | grep -v SM | cut -d '_' -f 4)
-bin=$(ls csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
+cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
+d_tilde=$(ls csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 
 echo $d_tilde
-echo $bin
+echo $cats
 
 #mcID="346214"
 #ifsys="syst_yield_${mcID}.csv"
@@ -68,14 +68,17 @@ done
 
 for id in 346214 ; do
   for d in  $d_tilde ; do
-    for b in $bin ; do
-      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${b}.csv";
-      ifcsv_exp="csv/mag_yield_${id}_${d}_${b}.csv";
-      ifcsv_tmp="csv/tmp_${id}_${d}_${b}.csv"
+    for cat in $cats ; do
+      echo ""
+      echo ======= ${d}_${cat} =======
+      echo ""
+#      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${cat}.csv";
+      ifcsv_exp="csv/mag_yield_${id}_${d}_${cat}.csv";
+      ifcsv_tmp="csv/tmp_${id}_${d}_${cat}.csv"
       > $ifcsv_tmp
       cat $ifcsv_exp >> $ifcsv_tmp
-      cat $ifcsv_theo >> $ifcsv_tmp
-      ofxml="xml/sample_${id}_${d}_${b}.xml"; #echo $ofxml
+#      cat $ifcsv_theo >> $ifcsv_tmp
+      ofxml="xml/sample_${id}_${d}_${cat}.xml"; #echo $ofxml
       fillSys $id $ifcsv_tmp $ofxml
       rm $ifcsv_tmp
     done
@@ -83,14 +86,17 @@ for id in 346214 ; do
 done
 
 for id in 343981; do
-  for b in $bin ; do
-    ifcsv_theo="TheorySys/mag_theory_${id}_SM_${b}.csv";
-    ifcsv_exp="csv/mag_yield_${id}_SM_${b}.csv";
-    ifcsv_tmp="csv/tmp_${id}_SM_${b}.csv"
+  for cat in $cats ; do
+    echo ""
+    echo ======= ${id}_${cat} =======
+    echo ""
+#    ifcsv_theo="TheorySys/mag_theory_${id}_SM_${cat}.csv";
+    ifcsv_exp="csv/mag_yield_${id}_SM_${cat}.csv";
+    ifcsv_tmp="csv/tmp_${id}_SM_${cat}.csv"
     > $ifcsv_tmp
     cat $ifcsv_exp >> $ifcsv_tmp
-    cat $ifcsv_theo >> $ifcsv_tmp
-    ofxml="xml/sample_${id}_SM_${b}.xml";
+#    cat $ifcsv_theo >> $ifcsv_tmp
+    ofxml="xml/sample_${id}_SM_${cat}.xml";
     fillSys $id $ifcsv_tmp $ofxml
     rm $ifcsv_tmp
   done

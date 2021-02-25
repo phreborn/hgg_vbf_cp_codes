@@ -9,11 +9,11 @@ echo ${!mapPara[*]}
 
 nonShapeSys=("EG_RESOLUTION_AF2" "EG_RESOLUTION_ALL")
 
-d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep -v SM | cut -d '_' -f 4)
-bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
+cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
+d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 
 echo $d_tilde
-echo $bin
+echo $cats
 
 #mcID="346214"
 #ifsys="syst_yield_${mcID}.csv"
@@ -85,11 +85,11 @@ fillSys(){
 
 
 for d in  $d_tilde ; do
-  for b in $bin ; do
-    echo "======d value ${d}, OO in ${b}======"
-    ifcsv_mu="csv/mu_${d}_${b}.csv";
-    ifcsv_sigma="csv/sigma_${d}_${b}.csv";
-    ofxml="xml/shape_${d}_${b}.xml"; #echo $ofxml
+  for cat in $cats ; do
+    echo "====== ${d}_${cat} ======"
+    ifcsv_mu="csv/mu_${d}_${cat}.csv";
+    ifcsv_sigma="csv/sigma_${d}_${cat}.csv";
+    ofxml="xml/shape_${d}_${cat}.xml"; #echo $ofxml
     > $ofxml
     fillSys RES $ifcsv_sigma $ofxml
     echo "" >> $ofsys

@@ -1,10 +1,15 @@
 #! /bin/bash
 
+#cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
+cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
+
 d_tilde=$(ls ../yield_sys/csv/ | grep b2 | grep -v SM | cut -d '_' -f 4)
 bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
 echo $bin
+
+echo $cats
 
 rundir=".."
 ifpara="csv/para_Nom.csv"
@@ -16,12 +21,13 @@ for d in $d_tilde;do
     mkdir -p ${rundir}/config/vbf_cp_${d}/model/
   fi
 
-  for b in $bin;do
+for cat in $cats;do
+    echo ${d}_${cat}
 
-    out_xml="${rundir}/config/vbf_cp_${d}/model/signal_OO_${b}.xml"
+    out_xml="${rundir}/config/vbf_cp_${d}/model/signal_OO_${cat}.xml"
     > $out_xml
 
-    paras=$(cat ${ifpara} | grep "Nominal_${d}_${b},"); # b1 b10
+    paras=$(cat ${ifpara} | grep "Nominal_${d}_${cat},"); # b1 b10
     mu=`echo $paras | cut -d ',' -f 2`
     sigma=`echo $paras | cut -d ',' -f 3`
     alpLo=`echo $paras | cut -d ',' -f 4`
@@ -45,5 +51,5 @@ for d in $d_tilde;do
     echo "<ModelItem Name=\"RooTwoSidedCBShape::signal(:observable:, muCB, sigmaCB, alphaCBLo, nCBLo, alphaCBHi, nCBHi)\"/>" >> $out_xml
     echo "</Model>" >> $out_xml
 
-  done
+done
 done

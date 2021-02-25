@@ -3,7 +3,10 @@
 
 void getMag(){
 
-  bool doSys = false;
+  int iSysInit = 1;
+  int iSysFin = 3;
+
+  bool doSys = true;
 
   char *cf_cats = (char*)"../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -15,8 +18,8 @@ void getMag(){
 
   // config maps
   lumi["mc16a"] = 36207.66;
-  lumi["mc16d"] = 44307.4;
-  lumi["mc16e"] = 58450.1;
+  //lumi["mc16d"] = 44307.4;
+  //lumi["mc16e"] = 58450.1;
 
   vector<int> v_mcID;
   v_mcID.push_back(346214);
@@ -70,7 +73,8 @@ void getMag(){
   cats["LL"] = {-1, 0.14, -1., 0.05};
 
   // file path list
-  TString dirpath = "/scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/";
+  //TString dirpath = "/scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/";
+  TString dirpath = "../../ntuples/sys/yield/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -93,7 +97,7 @@ void getMag(){
   std::vector<TString> sysList;
   sysList.clear();
   if(doSys) {
-    getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/343981_ggF_allSys.root", sysList);
+    getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16a/343981_ggF_allSys.root", sysList);
     //getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/346214_VBF_allSys.root", sysList);
     cout<<endl<<"sys list got"<<endl;
   }
@@ -160,9 +164,16 @@ for(auto cat : catCuts){
       }
 }
     vector<TString> calc_sysList;
-  
+
+    int testCounter = 0;
     for(auto sys : sysList_noUD){
       if(sys.first=="Nominal") continue;
+
+      testCounter++;
+      if(testCounter < iSysInit || testCounter > iSysFin) continue;
+
+      if(!sysExistInAllFiles(files, sys.first)) continue;
+
       //if(!sysExistInAllFiles(files, sys.first)) continue;
       //if(!sys.first.Contains("PRW")&&!sys.first.Contains("JET_EffectiveNP_Detector")&&!sys.first.Contains("MET_SoftTrk_ResoPara")) continue;
       cout<<"======="<<sys.first<<"========"<<endl;
@@ -209,24 +220,22 @@ for(auto cat : catCuts){
   
   
     // fill csv file
-//for(auto cat : cats){
-//    for(auto bin = bins.begin(); bin != bins.end(); bin++){
-//      for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-//        ofstream ofsyst(Form("csv/mag_yield_%i_"+d->first+"_"+bin->first+".csv", mcID), ios::out);
-//        if(!ofsyst){
-//          ofsyst.close();
-//          cout<<"error can't open file for record"<<endl;
-//        }
-//  
-//        for(auto sys : calc_sysList){
-//          if(sysList_noUD[sys]) ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+cat.first+"_"+bin->first]<<","<<mag_down[sys+"_"+d->first+"_"+cat.first+"_"+bin->first]<<endl;
-//          else ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+cat.first+"_"+bin->first]<<endl;
-//        }
-//  
-//        ofsyst.close();
-//      }
-//    }
-//}
+    for(auto cat : catCuts){
+      for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+        ofstream ofsyst(Form("csv/mag_yield_%i_"+d->first+"_"+cat.first+".csv", mcID), ios::out);
+        if(!ofsyst){
+          ofsyst.close();
+          cout<<"error can't open file for record"<<endl;
+        }
+  
+        for(auto sys : calc_sysList){
+          if(sysList_noUD[sys]) ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+cat.first]<<","<<mag_down[sys+"_"+d->first+"_"+cat.first]<<endl;
+          else ofsyst<<sys<<","<<mag_up[sys+"_"+d->first+"_"+cat.first]<<endl;
+        }
+  
+        ofsyst.close();
+      }
+    }
 
     // fill nominal yields
     ofstream ofyield_clear("csv/N_yield.csv", ios::app);
