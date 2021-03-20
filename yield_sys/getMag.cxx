@@ -1,12 +1,7 @@
 //#include "sysUtils.h"
 #include "../shape_sys/sysUtils.h"
 
-void getMag(){
-
-  int iSysInit = 1;
-  int iSysFin = 3;
-
-  bool doSys = true;
+void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   char *cf_cats = (char*)"../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -18,13 +13,15 @@ void getMag(){
 
   // config maps
   lumi["mc16a"] = 36207.66;
-  //lumi["mc16d"] = 44307.4;
-  //lumi["mc16e"] = 58450.1;
+  lumi["mc16d"] = 44307.4;
+  lumi["mc16e"] = 58450.1;
 
   vector<int> v_mcID;
-  v_mcID.push_back(346214);
+  v_mcID.push_back(sampleID);
+  int mcID = -1;
+  //v_mcID.push_back(346214);
   //v_mcID.push_back(343981);
-  int mcID = 346214;
+  //int mcID = 346214;
   //int mcID = 343981;
 
   map<TString, double> d_map;
@@ -218,11 +215,14 @@ for(auto cat : catCuts){
       //if((int)calc_sysList.size()>0) break;
     }// end syst
   
-  
+    TString dirName = "csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+    TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
+    system(tsCommand.Data());
+ 
     // fill csv file
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        ofstream ofsyst(Form("csv/mag_yield_%i_"+d->first+"_"+cat.first+".csv", mcID), ios::out);
+        ofstream ofsyst(Form("csv/Collect_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
         if(!ofsyst){
           ofsyst.close();
           cout<<"error can't open file for record"<<endl;
@@ -238,9 +238,9 @@ for(auto cat : catCuts){
     }
 
     // fill nominal yields
-    ofstream ofyield_clear("csv/N_yield.csv", ios::app);
+    ofstream ofyield_clear(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
     ofyield_clear.close();
-    ofstream ofyield("csv/N_yield.csv", ios::app);
+    ofstream ofyield(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
     if(!ofyield){
       ofyield.close();
       cout<<"error can't open file for record"<<endl;
@@ -262,5 +262,6 @@ for(auto cat : catCuts){
     for(auto hist = histVec.begin(); hist != histVec.end(); hist++){
       delete hist->second;
     }
+    cout<<"end mcID"<<endl;
   }// end mcID
 }
