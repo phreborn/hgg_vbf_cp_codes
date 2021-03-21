@@ -257,6 +257,7 @@ for(auto cat : catCuts){
         }
       }
 }
+    ofyield.close();
 
     // release hist heaps in getMyyHist()
     for(auto hist = histVec.begin(); hist != histVec.end(); hist++){
@@ -264,4 +265,12 @@ for(auto cat : catCuts){
     }
     cout<<"end mcID"<<endl;
   }// end mcID
+}
+
+int main(int argc, char* argv[]){
+  int sampleID = std::atoi(argv[1]);
+  int init = std::atoi(argv[2]);
+  int fin = std::atoi(argv[3]);
+  getMag(sampleID,init,fin);
+  return 0;
 }
