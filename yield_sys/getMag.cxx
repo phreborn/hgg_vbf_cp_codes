@@ -135,6 +135,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
     else if(!sys.Contains("__1down")) sysList_noUD[sys] = false;
   }
 
+  cout<<"total: "<<sysList_noUD.size()<<endl;
   for(auto sys : sysList_noUD){
     cout<<sys.first<<": "<<sys.second<<endl;
   }

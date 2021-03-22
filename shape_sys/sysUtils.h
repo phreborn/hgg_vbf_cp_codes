@@ -43,7 +43,6 @@
 #include "TH1D.h"
 #include "TLatex.h"
 #include "TLegend.h"
-#include "Math/Vector4Dfwd.h"
 #include "TStyle.h"
 
 using namespace std;

@@ -3,6 +3,9 @@
 #include "/afs/ihep.ac.cn/users/g/guofy/HggTwoSidedCBPdf.cxx"
 #include "/afs/ihep.ac.cn/users/g/guofy/HggTwoSidedCBPdf.h"
 
+#include "RooFitResult.h"
+#include "RooDataHist.h"
+
 using namespace RooFit;
 
 enum para{MEAN, SIGMA, ALPHALo, NLo, ALPHAHi, NHi};
@@ -59,12 +62,7 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
   }
 }
 
-void getMag(){
-
-  int iSysInit = 11;
-  int iSysFin = 12;
-
-  bool doSys = true;
+void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   char *cf_cats = (char*)"../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -76,8 +74,8 @@ void getMag(){
 
   // config maps
   lumi["mc16a"] = 36207.66;
-  //lumi["mc16d"] = 44307.4;
-  //lumi["mc16e"] = 58450.1;
+  lumi["mc16d"] = 44307.4;
+  lumi["mc16e"] = 58450.1;
 
   //vector<int> v_mcID;
   //v_mcID.push_back(346214);
@@ -190,6 +188,7 @@ void getMag(){
     else if(!sys.Contains("__1down")) sysList_noUD[sys] = false;
   }
 
+  cout<<endl<<"total: "<<sysList_noUD.size()<<endl;
   for(auto sys : sysList_noUD){
     cout<<sys.first<<": "<<sys.second<<endl;
   }
@@ -274,8 +273,12 @@ void getMag(){
   }// end syst
 
 
+  TString dirName = "csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+  TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
+  system(tsCommand.Data());
+
   // fill csv file
-  ofstream ofpara_Nom("csv/para_Nom.csv", ios::out);
+  ofstream ofpara_Nom(Form("csv/Collect_%i_%i/para_Nom.csv", iSysInit, iSysFin), ios::out);
   if(!ofpara_Nom){
     ofpara_Nom.close();
     cout<<"error can't open file for record"<<endl;
@@ -287,13 +290,13 @@ void getMag(){
 
   for(auto cat : catCuts){
    for(auto d = d_map.begin(); d != d_map.end(); d++){
-      ofstream ofmu("csv/mu_"+d->first+"_"+cat.first+".csv", ios::out);
+      ofstream ofmu(Form("csv/Collect_%i_%i/mu_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
       if(!ofmu){
         ofmu.close();
         cout<<"error can't open file for record"<<endl;
       }
     
-      ofstream ofsigma("csv/sigma_"+d->first+"_"+cat.first+".csv", ios::out);
+      ofstream ofsigma(Form("csv/Collect_%i_%i/sigma_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
       if(!ofsigma){
         ofsigma.close();
         cout<<"error can't open file for record"<<endl;
@@ -320,4 +323,11 @@ void getMag(){
 //  for(auto hist = histVec.begin(); hist != histVec.end(); hist++){
 //    delete hist->second;
 //  }
+}
+
+int main(int argc, char* argv[]){
+  int init = std::atoi(argv[1]);
+  int fin = std::atoi(argv[2]);
+  getMag(init,fin);
+  return 0;
 }
