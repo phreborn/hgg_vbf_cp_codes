@@ -1,6 +1,6 @@
 #! /bin/bash
 
-d_tilde=$(ls csv/ | grep b3 | grep -v SM | cut -d '_' -f 4)
+d_tilde=$(ls csv/ | grep TT_b3 | grep -v SM | cut -d '_' -f 4)
 bin=$(ls csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
