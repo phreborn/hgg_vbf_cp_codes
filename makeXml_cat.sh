@@ -1,6 +1,7 @@
 #! /bin/bash
 
 includeSys=1
+SSAvailable=1
 
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
@@ -124,7 +125,7 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    if [ $includeSys -eq 1 ];then
+    if [ $includeSys -eq 1 -a ${SSAvailable} -eq 1 ];then
     echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSig\">" >> $out_xml
     echo "    <Systematic Name=\"ATLAS_Hgg_BIAS_:category:\" Constr=\"gaus\" CentralValue=\"0\" Mag=\"${spurious}\" WhereTo=\"yield\"/>" >> $out_xml
     echo "  </Sample>" >> $out_xml
