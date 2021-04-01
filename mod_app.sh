@@ -13,7 +13,7 @@ for cat in ${cats};do
   file=config/vbf_cp_${d}/channel/category_OO_${cat}.xml; echo ${file}
   pos=$(sed -n '/nbkg_:category/=' ${file})
   old=$(grep "nbkg_:category" ${file} | cut -d , -f 1 | cut -d "[" -f 2)
-  new=$(grep "${cat}" shape_sys/csv/para_bkg.csv | cut -d , -f 4)
+  new=$(grep "${cat}" shape_sys/csv/para_bkg.csv | cut -d , -f 5)
   echo "sed -i '${pos} s/${old}/${new}/' ${file}" >> ${tmp}
 done
 done
