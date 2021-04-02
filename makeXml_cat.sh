@@ -35,7 +35,7 @@ for cat in $cats;do
   echo ""
   y_ggH=$(cat ${sig_para} | grep "ggH_${cat}," | cut -d ',' -f 2);echo yggH_${cat}_${y_ggH}
   y_VBF_SM=$(cat ${sig_para} | grep "VBF_m00_${cat}," | cut -d ',' -f 2);echo yVBF_SM_${y_VBF_SM}
-  N_bkg=$(cat ${bkg_para} | grep "${cat}," | cut -d ',' -f 4); echo nbkg_${cat}_${N_bkg}
+  N_bkg=$(cat ${bkg_para} | grep "${cat}," | cut -d ',' -f 5); echo nbkg_${cat}_${N_bkg}
 
   sys_ggH=$(cat yield_sys/xml/sample_343981_SM_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
   sys_VBF_SM=$(cat yield_sys/xml/sample_346214_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
