@@ -1,10 +1,11 @@
 #include "sysUtils.h"
 
-#include "/afs/ihep.ac.cn/users/g/guofy/HggTwoSidedCBPdf.cxx"
-#include "/afs/ihep.ac.cn/users/g/guofy/HggTwoSidedCBPdf.h"
+#include "RooTwoSidedCBShape.h"
 
 #include "RooFitResult.h"
 #include "RooDataHist.h"
+#include "RooWorkspace.h"
+#include "RooRealVar.h"
 
 using namespace RooFit;
 
@@ -19,23 +20,24 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
   getMyyHist(hist_VBF, id_VBF, sys, files, bins, true, d_tilde, cats);
   getMyyHist(hist_ggH, id_ggH, sys, files, bins, false, {{"SM", 0.}}, cats);
 
-  for(auto cat : cats){
-    for(auto d = d_tilde.begin(); d != d_tilde.end(); d++){
+  for(auto d = d_tilde.begin(); d != d_tilde.end(); d++){
+    RooWorkspace *ws = new RooWorkspace("ws","workspace");
+    for(auto cat : cats){
       cout<<endl<<"========= "<<sys+"_"+d->first+"_"+cat.first<<" ========="<<endl<<endl;
 
       TH1F hist_sig = *(hist_ggH[sys+"_SM_"+cat.first]) + *(hist_VBF[sys+"_"+d->first+"_"+cat.first]);
 
       RooRealVar myy("m_yy","myy",105000,160000);
 
-      RooDataHist dh_myy_sig("dh_myy_sig","dh_myy_sig", myy, Import(hist_sig));
+      RooDataHist dh_myy_sig("dh_myy_sig_"+cat.first,"dh_myy_sig", myy, Import(hist_sig));
 
-      RooRealVar mean("mean","mean",120000,130000);
-      RooRealVar sigma("sigma","sigma",100,10000);
-      RooRealVar n1("n1","",0,25);
-      RooRealVar alpha1("alpha1","",0,3);
-      RooRealVar n2("n2","",0,45);
-      RooRealVar alpha2("alpha2","",0,3);
-      HggTwoSidedCBPdf DSCB_myy("sig","signal component",myy,mean,sigma,alpha1,n1,alpha2,n2);
+      RooRealVar mean("mean_"+cat.first,"mean",120000,130000);
+      RooRealVar sigma("sigma_"+cat.first,"sigma",100,10000);
+      RooRealVar n1("n1_"+cat.first,"",0,25);
+      RooRealVar alpha1("alpha1_"+cat.first,"",0,3);
+      RooRealVar n2("n2_"+cat.first,"",0,45);
+      RooRealVar alpha2("alpha2_"+cat.first,"",0,3);
+      RooTwoSidedCBShape DSCB_myy("sig_"+cat.first,"signal component",myy,mean,sigma,alpha1,n1,alpha2,n2);
 
       RooFitResult* result = DSCB_myy.fitTo(dh_myy_sig, Save(kTRUE));
       if(result->status()!=0) cout<<"WARNING : fit status != 0"<<endl;
@@ -50,6 +52,18 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
       //canv->SaveAs("plotFit/"+sys+"_"+d->first+"_"+cat.first+"_"+bin->first+".png");
       //delete canv;
 
+      if(d->first=="m00"){
+        ws->import(myy);
+        ws->import(mean);
+        ws->import(sigma);
+        ws->import(n1);
+        ws->import(alpha1);
+        ws->import(n2);
+        ws->import(alpha2);
+        ws->import(dh_myy_sig);
+        ws->import(DSCB_myy);
+      }
+
       para[sys+"_"+d->first+"_"+cat.first].clear();
 
       para[sys+"_"+d->first+"_"+cat.first].push_back(mean.getVal());
@@ -59,6 +73,7 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
       para[sys+"_"+d->first+"_"+cat.first].push_back(alpha2.getVal());
       para[sys+"_"+d->first+"_"+cat.first].push_back(n2.getVal());
     }
+    if(d->first=="m00") ws->writeToFile(("plotFit/ws_"+sys+"_"+d->first+".root").Data());
   }
 }
 
@@ -85,34 +100,34 @@ void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   map<TString, double> d_map;
   d_map["m00"] = 0.;
-  d_map["m01"] = -0.01;
-  d_map["m02"] = -0.02;
-  d_map["m03"] = -0.03;
-  d_map["m04"] = -0.04;
-  d_map["m05"] = -0.05;
-  d_map["m06"] = -0.06;
-  d_map["m07"] = -0.07;
-  d_map["m08"] = -0.08;
-  d_map["m10"] = -0.10;
-  d_map["m12"] = -0.12;
-  d_map["m14"] = -0.14;
-  d_map["m16"] = -0.16;
-  d_map["m18"] = -0.18;
-  d_map["m20"] = -0.20;
-  d_map["p01"] = 0.01;
-  d_map["p02"] = 0.02;
-  d_map["p03"] = 0.03;
-  d_map["p04"] = 0.04;
-  d_map["p05"] = 0.05;
-  d_map["p06"] = 0.06;
-  d_map["p07"] = 0.07;
-  d_map["p08"] = 0.08;
-  d_map["p10"] = 0.10;
-  d_map["p12"] = 0.12;
-  d_map["p14"] = 0.14;
-  d_map["p16"] = 0.16;
-  d_map["p18"] = 0.18;
-  d_map["p20"] = 0.20;
+  //d_map["m01"] = -0.01;
+  //d_map["m02"] = -0.02;
+  //d_map["m03"] = -0.03;
+  //d_map["m04"] = -0.04;
+  //d_map["m05"] = -0.05;
+  //d_map["m06"] = -0.06;
+  //d_map["m07"] = -0.07;
+  //d_map["m08"] = -0.08;
+  //d_map["m10"] = -0.10;
+  //d_map["m12"] = -0.12;
+  //d_map["m14"] = -0.14;
+  //d_map["m16"] = -0.16;
+  //d_map["m18"] = -0.18;
+  //d_map["m20"] = -0.20;
+  //d_map["p01"] = 0.01;
+  //d_map["p02"] = 0.02;
+  //d_map["p03"] = 0.03;
+  //d_map["p04"] = 0.04;
+  //d_map["p05"] = 0.05;
+  //d_map["p06"] = 0.06;
+  //d_map["p07"] = 0.07;
+  //d_map["p08"] = 0.08;
+  //d_map["p10"] = 0.10;
+  //d_map["p12"] = 0.12;
+  //d_map["p14"] = 0.14;
+  //d_map["p16"] = 0.16;
+  //d_map["p18"] = 0.18;
+  //d_map["p20"] = 0.20;
 
   map<TString, pair<float, float>> bins;
   bins["b1"] = make_pair(-999999999, -2);

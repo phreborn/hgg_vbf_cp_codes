@@ -1,2 +1,13 @@
+config/
 shape_sys/csv/
+shape_sys/exe_Collect_*sh
+shape_sys/submit_Collect_*
+shape_sys/plotFit/*png
+shape_sys/plotFit/*root
 yield_sys/csv/
+yield_sys/exe_Collect_*sh
+yield_sys/submit_Collect_*
+yield_sys/TheorySys/*csv
+
+shape_sys/xml/
+yield_sys/xml/
