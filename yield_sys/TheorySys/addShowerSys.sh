@@ -10,12 +10,12 @@ transfer(){
 
   sampleName=$(echo ${inf} | cut -d _ -f 1)
 
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
-  sed -i '/shower*,/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
+  sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
 
   lines=$(cat ${inpath}/$inf | sed 's/ //g'); #echo $lines
 
