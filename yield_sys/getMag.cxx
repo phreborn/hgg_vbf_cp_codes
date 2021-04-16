@@ -172,7 +172,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
       if(!sysExistInAllFiles(files, sys.first)) continue;
 
-      TFile *fhist = new TFile("plotFit/hist_"+sys.first+".root", "recreate");
+      TFile *fhist = new TFile(Form("plotFit/hist_%i_%s.root", mcID, sys.first.Data()), "recreate");
 
       //if(!sysExistInAllFiles(files, sys.first)) continue;
       //if(!sys.first.Contains("PRW")&&!sys.first.Contains("JET_EffectiveNP_Detector")&&!sys.first.Contains("MET_SoftTrk_ResoPara")) continue;
@@ -195,11 +195,11 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
             mag_up[sysKey] = (histVec[upKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"UP"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
             mag_down[sysKey] = (histVec[downKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"DOWN"<<","<<sys.first<<","<<mag_down[sys.first]<<endl;
 
-            histVec[nomKey]->SetName(nomKey);
+            histVec["Nominal_"+dname+"_"+catName]->SetName("Nominal_"+dname+"_"+catName);
             histVec[upKey]->SetName(upKey);
             histVec[downKey]->SetName(downKey);
             fhist->cd();
-            histVec[nomKey]->Write();
+            histVec["Nominal_"+dname+"_"+catName]->Write();
             histVec[upKey]->Write();
             histVec[downKey]->Write();
           }
@@ -218,10 +218,10 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
             mag_up[sysKey] = (histVec[sysKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"UP/DOWN"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
 
-            histVec[nomKey]->SetName(nomKey);
+            histVec["Nominal_"+dname+"_"+catName]->SetName("Nominal_"+dname+"_"+catName);
             histVec[sysKey]->SetName(sysKey);
             fhist->cd();
-            histVec[nomKey]->Write();
+            histVec["Nominal_"+dname+"_"+catName]->Write();
             histVec[sysKey]->Write();
           }
         }
