@@ -29,9 +29,8 @@ fillSys(){
   
   if [ "${para}" == "RES" ];then
     echo "<Systematic Name=\"ATLAS_HIGGS_MASS\" Constr=\"gaus\" CentralValue=\"1\" Mag=\"0.0019\" WhereTo=\"shape\"/>" >> $ofsys
+    resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
   fi
-
-  resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
 
   lines=`cat $inf_para`
   for line in $lines
