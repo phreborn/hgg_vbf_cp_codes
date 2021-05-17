@@ -112,7 +112,7 @@ void variationYield(){
         lg->AddEntry(hu, "up", "l");
         lg->AddEntry(hd, "down", "l");
       
-        hu->GetYaxis()->SetTitle("(variation-nominal)/nominal");
+        hu->GetYaxis()->SetTitle("(vari.-nom.)/nom.");
       
         hu->SetLineColor(kRed);
         hd->SetLineColor(kBlue);
