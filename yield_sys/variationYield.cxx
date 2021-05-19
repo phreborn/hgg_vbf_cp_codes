@@ -87,7 +87,7 @@ void variationYield(){
           else vd.push_back(0.);
         }
       
-        gStyle->SetPadBottomMargin(0.32);
+        gStyle->SetPadBottomMargin(0.41);
       
         int nsys = sys.size();
         TH1F *hu = new TH1F("var_up", "", nsys, 0, nsys);
