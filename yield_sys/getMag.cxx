@@ -147,6 +147,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
     std::map<TString, TH1F*> histVec;
     map<TString, double> N_nominal;
+    map<TString, double> Err_stat;
+    map<TString, double> N_up;
+    map<TString, double> N_down;
     map<TString,double> mag_up;
     map<TString,double> mag_down;
 
@@ -158,7 +161,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
   
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        N_nominal[d->first+"_"+cat.first] = histVec["Nominal_"+d->first+"_"+cat.first]->Integral(); cout<<d->first+"_"+cat.first<<","<<N_nominal[d->first+"_"+cat.first]<<endl;
+        double statErr = 0.;
+        N_nominal[d->first+"_"+cat.first] = histVec["Nominal_"+d->first+"_"+cat.first]->IntegralAndError(1, 550, statErr); cout<<d->first+"_"+cat.first<<","<<N_nominal[d->first+"_"+cat.first]<<endl;
+        Err_stat[d->first+"_"+cat.first] = statErr;
       }
     }
     vector<TString> calc_sysList;
@@ -195,6 +200,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
             mag_up[sysKey] = (histVec[upKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"UP"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
             mag_down[sysKey] = (histVec[downKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"DOWN"<<","<<sys.first<<","<<mag_down[sys.first]<<endl;
 
+            N_up[sys.first+"_"+combName] = histVec[upKey]->Integral();
+            N_down[sys.first+"_"+combName] = histVec[downKey]->Integral();
+
             histVec["Nominal_"+dname+"_"+catName]->SetName("Nominal_"+dname+"_"+catName);
             histVec[upKey]->SetName(upKey);
             histVec[downKey]->SetName(downKey);
@@ -217,6 +225,8 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
             TString sysKey = sys.first+"_"+combName;
 
             mag_up[sysKey] = (histVec[sysKey]->Integral()-N_nominal[nomKey])/N_nominal[nomKey]; //cout<<"UP/DOWN"<<","<<sys.first<<","<<mag_up[sys.first]<<endl;
+
+            N_up[sys.first+"_"+combName] = histVec[sysKey]->Integral();
 
             histVec["Nominal_"+dname+"_"+catName]->SetName("Nominal_"+dname+"_"+catName);
             histVec[sysKey]->SetName(sysKey);
@@ -253,6 +263,37 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
         }
   
         ofsyst.close();
+      }
+    }
+
+    for(auto cat : catCuts){
+      for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
+        std::vector<TString> dToSave = {"m02", "m00", "p02", "SM"};
+        if(std::find(dToSave.begin(), dToSave.end(), d->first) == dToSave.end()) continue;
+        ofstream yofsyst(Form("csv/Collect_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        if(!yofsyst){
+          yofsyst.close();
+          cout<<"error can't open file for yield"<<endl;
+          continue;
+        }
+
+        for(auto sys : calc_sysList){
+          if(sysList_noUD[sys]){
+            float ynom = N_nominal[d->first+"_"+cat.first];
+            float errStat = Err_stat[d->first+"_"+cat.first];
+            float yup = N_up[sys+"_"+d->first+"_"+cat.first];
+            float ydown = N_down[sys+"_"+d->first+"_"+cat.first];
+            yofsyst<<sys<<","<<ynom<<","<<errStat<<","<<yup<<","<<ydown<<","<<(yup+ydown)/2<<endl;
+          }
+          else{
+            float ynom = N_nominal[d->first+"_"+cat.first];
+            float errStat = Err_stat[d->first+"_"+cat.first];
+            float yup = N_up[sys+"_"+d->first+"_"+cat.first];
+            yofsyst<<sys<<","<<ynom<<","<<errStat<<","<<yup<<","<<","<<endl;
+          }
+        }
+
+        yofsyst.close();
       }
     }
 
