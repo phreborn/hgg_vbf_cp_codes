@@ -10,7 +10,8 @@ echo ${!mapPara[*]}
 nonShapeSys=("EG_RESOLUTION_AF2" "EG_RESOLUTION_ALL")
 
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
-d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
+d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep mag | grep -v SM | grep TT | cut -d '_' -f 4)
+d_tilde=$(cat ../Dtilde | grep -v "#")
 
 echo $d_tilde
 echo $cats
