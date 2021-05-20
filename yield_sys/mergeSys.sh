@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files=$(ls csv/Collect_1_3/ | grep mag)
+files=$(ls csv/Collect_1_3/ | grep yield_)
 for f in ${files};do
   > csv/${f}
 done
