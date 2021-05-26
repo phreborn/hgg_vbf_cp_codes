@@ -19,16 +19,16 @@ TL_b4:Exp
 TL_b5:Exp
 TL_b6:Exp
 
-LT_b1:ExpPoly2
-LT_b2:ExpPoly2
-LT_b3:ExpPoly2
-LT_b4:ExpPoly2
-LT_b5:ExpPoly2
-LT_b6:ExpPoly2
+LT_b1:Exp
+LT_b2:Exp
+LT_b3:Pow
+LT_b4:Pow
+LT_b5:Exp
+LT_b6:Exp
 
-LL_b1:ExpPoly2
-LL_b2:ExpPoly2
+LL_b1:Exp
+LL_b2:Exp
 LL_b3:ExpPoly2
-LL_b4:ExpPoly2
-LL_b5:ExpPoly2
-LL_b6:ExpPoly2
+LL_b4:Exp
+LL_b5:Exp
+LL_b6:Exp

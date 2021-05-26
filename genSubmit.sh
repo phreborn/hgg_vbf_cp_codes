@@ -14,7 +14,7 @@ for d in ${d_tilde};do
 
   echo "#!/bin/bash" >> exe_${jobName}.sh
   echo "" >> exe_${jobName}.sh
-  echo "cd /scratchfs/atlas/chenhr/atlaswork/VBF_CP/syst" >> exe_${jobName}.sh
+  echo "cd /scratchfs/atlas/huirun/atlaswork/VBF_CP/syst" >> exe_${jobName}.sh
   echo "source makeXml_cat.sh -d ${d}" >> exe_${jobName}.sh
   echo "sleep 2" >> exe_${jobName}.sh
 
