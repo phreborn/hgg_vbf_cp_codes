@@ -28,4 +28,4 @@ shape_sys/plotFit/build/
 *core.*
 
 exe_*.sh
-submit_*/
+hep_sub_*/
