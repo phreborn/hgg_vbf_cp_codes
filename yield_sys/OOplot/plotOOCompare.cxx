@@ -111,7 +111,7 @@ void plotOOCompare(){
     rhv->GetXaxis()->SetTitle("OO1");
     rhv->GetXaxis()->SetTitleSize((hv->GetXaxis()->GetTitleSize())*7/3);
     rhv->GetXaxis()->SetTitleOffset(0.3);
-    rhv->GetYaxis()->SetTitle("ratio");
+    rhv->GetYaxis()->SetTitle("ratio to SM VBF");
     rhv->GetYaxis()->SetTitleSize((hv->GetYaxis()->GetTitleSize())*7/3);
     rhv->GetYaxis()->SetTitleOffset(0.4);
     rhv->SetLineWidth(0);
