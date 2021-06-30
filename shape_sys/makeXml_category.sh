@@ -28,7 +28,7 @@ fillSys(){
  
   resp_Prod="<Item Name=\"prod::resp_${para}("
   
-  if [ "${para}" == "RES" ];then
+  if [ "${para}" == "SCALE" ];then
     echo "<Systematic Name=\"ATLAS_HIGGS_MASS\" Constr=\"gaus\" CentralValue=\"1\" Mag=\"0.0019\" WhereTo=\"shape\"/>" >> $ofsys
     resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
   fi
