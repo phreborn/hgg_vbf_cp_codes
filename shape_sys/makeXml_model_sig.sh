@@ -5,6 +5,7 @@ cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
 d_tilde=$(ls ../yield_sys/csv/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
+d_tilde=$(cat ../cHW | grep -v "#")
 bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
@@ -28,7 +29,8 @@ for cat in $cats;do
     out_xml="${rundir}/config/vbf_cp_${d}/model/signal_OO_${cat}.xml"
     > $out_xml
 
-    paras=$(cat ${ifpara} | grep "Nominal_${d}_${cat},"); # b1 b10
+    paras=$(cat ${ifpara} | grep "Nominal_m00_${cat},"); # b1 b10
+    #paras=$(cat ${ifpara} | grep "Nominal_${d}_${cat},"); # b1 b10
     mu=`echo $paras | cut -d ',' -f 2`
     sigma=`echo $paras | cut -d ',' -f 3`
     alpLo=`echo $paras | cut -d ',' -f 4`

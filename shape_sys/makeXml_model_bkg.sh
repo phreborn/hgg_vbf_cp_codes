@@ -5,6 +5,7 @@ cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
 d_tilde=$(ls ../yield_sys/csv/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
+d_tilde=$(cat ../cHW | grep -v "#")
 bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
