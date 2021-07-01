@@ -3,16 +3,17 @@
 #include "/scratchfs/atlas/huirun/atlaswork/ATLAS_style/atlasrootstyle/AtlasLabels.h"
 
 #ifdef __CLING__
+// these are not headers - do not treat them as such - needed for ROOT6
 #include "/scratchfs/atlas/huirun/atlaswork/ATLAS_style/atlasrootstyle/AtlasLabels.C"
 #include "/scratchfs/atlas/huirun/atlaswork/ATLAS_style/atlasrootstyle/AtlasUtils.C"
 #endif
 
-#include "../shape_sys/sysUtils.h"
+#include "../sysUtils.h"
 
-void variationYield(){
+void sigmaVar(){
   SetAtlasStyle();
 
-  char *cf_cats = (char*)"../../nom_WS/cats.cfg";
+  char *cf_cats = (char*)"../../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
   getCatCuts(cf_cats, catCuts); for(auto c : catCuts) cout<<c.first<<c.second<<endl;
 
@@ -49,7 +50,7 @@ void variationYield(){
 
   std::map<TString, TString> ids;
   ids["vbf"] = "346214";
-  ids["ggh"] = "343981";
+  //ids["ggh"] = "343981";
 
   std::map<TString, double> dtmp;
 
@@ -71,10 +72,10 @@ void variationYield(){
         std::vector<float> vd;
       
         ifstream file;
-        file.open(Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data()));
+        file.open(Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data()));
         if( ! file.is_open())
         {
-            cout<<"can not open file! "<<Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data())<<endl;
+            cout<<"can not open file! "<<Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data())<<endl;
             return;
         }
         char tmp[1000];
@@ -98,24 +99,37 @@ void variationYield(){
           else vd.push_back(0.);
         }
       
-        gStyle->SetPadBottomMargin(0.41);
+        //gStyle->SetPadBottomMargin(0.13);
       
         int nsys = sys.size();
-        TH1F *hu = new TH1F("var_up", "", nsys, 0, nsys);
-        TH1F *hd = new TH1F("var_down", "", nsys, 0, nsys);
-        TAxis *axis = hu->GetXaxis();
+
+        int csys = 0;
         for(int i = 0; i < nsys; i++){
-          axis->SetBinLabel(i+1, sys[i]);
-          hu->Fill(i, vu[i]);
-          hd->Fill(i, vd[i]);
+          if(!sys[i].Contains("RESO")) continue;
+          if(sys[i].Contains("EG_RESOLUTION_AF2")) continue;
+          csys++;
+        }
+        TH1F *hu = new TH1F("var_up", "", csys, 0, csys);
+        TH1F *hd = new TH1F("var_down", "", csys, 0, csys);
+        TAxis *axis = hu->GetXaxis();
+        int j = 0;
+        for(int i = 0; i < nsys; i++){
+          if(!sys[i].Contains("RESO")) continue;
+          if(sys[i].Contains("EG_RESOLUTION_AF2")) continue;
+          axis->SetBinLabel(j+1, sys[i].ReplaceAll("EG_RESOLUTION_", ""));
+          hu->Fill(j, vu[i]);
+          hd->Fill(j, vd[i]);
           cout<<sys[i]<<": "<<vu[i]<<", "<<vd[i]<<endl;
+          j++;
         }
         axis->SetLabelSize(0.03);
+        //axis->LabelsOption("v");
+        axis->LabelsOption("u");
 
         double ymax = hu->GetMaximum(); if(hd->GetMaximum() > ymax) ymax = hd->GetMaximum();
         double ymin = hu->GetMinimum() > hd->GetMinimum() ? hd->GetMinimum() : hu->GetMinimum();
-        hu->SetMaximum(ymax+0.05*(ymax-ymin));
-        hu->SetMinimum(ymin-0.05*(ymax-ymin));
+        hu->SetMaximum(ymax+0.5*(ymax-ymin));
+        hu->SetMinimum(ymin-0.5*(ymax-ymin));
 
         TLegend *lg = new TLegend(0.22, 0.72, 0.40, 0.85);
         lg->SetFillStyle(0);
@@ -133,9 +147,9 @@ void variationYield(){
         hd->Draw("same hist");
         lg->Draw("same");
 
-        myText(0.22, 0.88, 1, (sample+",  "+cat+",  yield").Data());
+        myText(0.22, 0.88, 1, (cat+",  EG_RESOLUTION,  #sigma_{CB}").Data());
 
-        canv->SaveAs("plotFit/yieldVari_"+sample+"_"+dName+"_"+cat+".png");
+        canv->SaveAs("sigmaVari_"+dName+"_"+cat+".png");
       }
     }
   }
