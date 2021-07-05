@@ -72,10 +72,10 @@ void muVar(){
         std::vector<float> vd;
       
         ifstream file;
-        file.open(Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data()));
+        file.open(Form("../csv/mu_%s_%s.csv", dName.Data(), cat.Data()));
         if( ! file.is_open())
         {
-            cout<<"can not open file! "<<Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data())<<endl;
+            cout<<"can not open file! "<<Form("../csv/mu_%s_%s.csv", dName.Data(), cat.Data())<<endl;
             return;
         }
         char tmp[1000];
