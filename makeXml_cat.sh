@@ -105,15 +105,21 @@ for cat in $cats;do
     fi
 
     echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
-    #echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
-    if [ $includeSys -eq 1 ];then
-    for sys in $sys_VBF_SM;do
-      echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
-    done
-    fi
+    #if [ $includeSys -eq 1 ];then
+    #for sys in $sys_VBF_SM;do
+    #  echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
+    #done
+    #fi
     echo "    <NormFactor Name=\"yield_VBF_SM[${y_VBF_SM}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_VBF_SM[1]\" />" >> $out_xml
+    echo "  </Sample>" >> $out_xml
+    echo "" >> $out_xml
+
+    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "    <NormFactor Name=\"yield_ggH_SM[${y_ggH}]\"/>" >> $out_xml
+    echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+    echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
