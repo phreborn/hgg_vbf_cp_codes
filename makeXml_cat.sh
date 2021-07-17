@@ -1,6 +1,6 @@
 #! /bin/bash
 
-includeSys=0
+includeSys=1
 SSAvailable=1
 
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
@@ -8,9 +8,11 @@ cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
 d_tilde=$(ls yield_sys/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat Dtilde | grep -v "#")
-d_tilde=$(cat cHW | grep -v "#")
+d_tilde=$(cat cHW_fine | grep -v "#")
 
 if [ "$1" = "-d" ];then d_tilde=$2;fi
+
+smp="m0d00"
 
 bin=$(ls yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
@@ -41,7 +43,7 @@ preSys="ATLAS"
 for cat in $cats;do
   echo ""
   y_ggH=$(cat ${ggF_para} | grep "ggH_${cat}," | cut -d ',' -f 2);echo yggH_${cat}_${y_ggH}
-  y_VBF_SM=$(cat ${VBF_para} | grep "VBF_m0d0_${cat}," | cut -d ',' -f 2);echo yVBF_SM_${y_VBF_SM}
+  y_VBF_SM=$(cat ${VBF_para} | grep "VBF_${smp}_${cat}," | cut -d ',' -f 2);echo yVBF_SM_${y_VBF_SM}
   #y_ggH=$(cat ${sig_para} | grep "ggH_${cat}," | cut -d ',' -f 2);echo yggH_${cat}_${y_ggH}
   #y_VBF_SM=$(cat ${sig_para} | grep "VBF_m00_${cat}," | cut -d ',' -f 2);echo yVBF_SM_${y_VBF_SM}
   N_bkg=$(cat ${bkg_para} | grep "${cat}," | cut -d ',' -f 5); echo nbkg_${cat}_${N_bkg}
@@ -56,7 +58,7 @@ for cat in $cats;do
     out_xml="${rundir}/config/vbf_cp_${d}/channel/category_OO_${cat}.xml"
     > $out_xml
 
-    sys_shape=$(cat shape_sys/xml/shape_${d}_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
+    sys_shape=$(cat shape_sys/xml/shape_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
 
     y_VBF_RW=$(cat ${VBF_para} | grep "VBF_${d}_${cat}," | cut -d ',' -f 2);echo yVBF_${d}_${y_VBF_RW}
     #y_VBF_RW=$(cat ${sig_para} | grep "VBF_${d}_${cat}," | cut -d ',' -f 2);echo yVBF_${d}_${y_VBF_RW}
@@ -102,7 +104,7 @@ for cat in $cats;do
       echo "" >> $out_xml
     fi
 
-    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m0d0/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     #echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
     for sys in $sys_VBF_SM;do

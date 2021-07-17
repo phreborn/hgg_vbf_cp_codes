@@ -6,6 +6,7 @@ echo ${!mapCtrType[*]}
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 d_tilde=$(ls csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
+d_tilde=$(cat ../cHW_fine | grep -v "#")
 
 echo $d_tilde
 echo $cats
@@ -73,7 +74,7 @@ for id in 346214 ; do
       echo ""
       echo ======= ${d}_${cat} =======
       echo ""
-      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${cat}.csv";
+      ifcsv_theo="TheorySys/mag_theory_${id}_m00_${cat}.csv";
       ifcsv_exp="csv/mag_yield_${id}_${d}_${cat}.csv";
       ifcsv_tmp="csv/tmp_${id}_${d}_${cat}.csv"
       > $ifcsv_tmp

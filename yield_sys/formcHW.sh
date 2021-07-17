@@ -3,6 +3,8 @@
 #cHWs=$(cat ../cHW_fine | grep -v "#")
 cHWs=$(ls /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine/LL_PH_EFF_ISO_Uncertainty_cHW_*txt | cut -d _ -f 9 | sed 's/\.txt//g')
 
+fcHW="../cHW_fine"
+> ${fcHW}
 for cHW in ${cHWs};do
   scHW=${cHW}
   cHW="p${cHW}"
@@ -14,4 +16,5 @@ for cHW in ${cHWs};do
   elif [ ${#decimal} -eq 1 ]; then cHW="${cHW}0"
   fi
   echo "cHWs[\"${cHW}\"] = \"${scHW}\";"
+  echo ${cHW} >> ${fcHW}
 done

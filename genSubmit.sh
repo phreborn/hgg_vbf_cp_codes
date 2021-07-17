@@ -4,6 +4,7 @@ allJobs=jobsSub.sh
 > ${allJobs}
 
 d_tilde=$(cat Dtilde | grep -v "#")
+d_tilde=$(cat cHW_fine | grep -v "#")
 
 for d in ${d_tilde};do
   jobName=Collect_${d}; echo ${jobName}

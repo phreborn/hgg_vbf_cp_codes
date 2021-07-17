@@ -69,7 +69,48 @@ void readInYds(TString inFileName, map<TString, float> &varMaps)
 void kfactor(){
 
   map<TString, TString> cHWs;
-  cHWs["m2d5"] = "-2.5";
+  cHWs["m0d00"] = "-1.56e-07";
+  cHWs["m0d05"] = "-0.05";
+  cHWs["m0d10"] = "-0.1";
+  cHWs["m0d15"] = "-0.15";
+  cHWs["m0d20"] = "-0.2";
+  cHWs["m0d25"] = "-0.25";
+  cHWs["m0d30"] = "-0.3";
+  cHWs["m0d35"] = "-0.35";
+  cHWs["m0d40"] = "-0.4";
+  cHWs["m0d45"] = "-0.45";
+  cHWs["m0d50"] = "-0.5";
+  cHWs["m0d55"] = "-0.55";
+  cHWs["m0d60"] = "-0.6";
+  cHWs["m0d65"] = "-0.65";
+  cHWs["m0d70"] = "-0.7";
+  cHWs["m0d75"] = "-0.75";
+  cHWs["m0d80"] = "-0.8";
+  cHWs["m0d85"] = "-0.85";
+  cHWs["m0d90"] = "-0.9";
+  cHWs["m0d95"] = "-0.95";
+  cHWs["p0d05"] = "0.05";
+  cHWs["p0d10"] = "0.1";
+  cHWs["p0d15"] = "0.15";
+  cHWs["p0d20"] = "0.2";
+  cHWs["p0d25"] = "0.25";
+  cHWs["p0d30"] = "0.3";
+  cHWs["p0d35"] = "0.35";
+  cHWs["p0d40"] = "0.4";
+  cHWs["p0d45"] = "0.45";
+  cHWs["p0d50"] = "0.5";
+  cHWs["p0d55"] = "0.55";
+  cHWs["p0d60"] = "0.6";
+  cHWs["p0d65"] = "0.65";
+  cHWs["p0d70"] = "0.7";
+  cHWs["p0d75"] = "0.75";
+  cHWs["p0d80"] = "0.8";
+  cHWs["p0d85"] = "0.85";
+  cHWs["p0d90"] = "0.9";
+  cHWs["p0d95"] = "0.95";
+  cHWs["p1d00"] = "1";
+
+  /*cHWs["m2d5"] = "-2.5";
   cHWs["m2d0"] = "-2";
   cHWs["m1d5"] = "-1.5";
   cHWs["m1d0"] = "-1";
@@ -79,7 +120,7 @@ void kfactor(){
   cHWs["p1d0"] = "1";
   cHWs["p1d5"] = "1.5";
   cHWs["p2d0"] = "2";
-  cHWs["p2d5"] = "2.5";
+  cHWs["p2d5"] = "2.5";*/
   std::vector<TString> bdtCats{"TT", "TL", "LT", "LL"};
   std::map<int, TString> bins;
   bins[1] = "b1";
@@ -117,7 +158,7 @@ void kfactor(){
 
         map<TString, vector<float>> nomKFs;
         //cout<<"kfactor_SMEFT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt"<<endl;
-        readInKFs("kfactor_SMEFT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt", nomKFs);
+        readInKFs("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt", nomKFs);
 
         float kf = nomKFs["Nominal"].at(binNum-1);
         float ycHW = ySM*kf; cout<<"kfactor at "<<binName<<": "<<kf<<endl;
