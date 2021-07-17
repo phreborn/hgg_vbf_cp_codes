@@ -33,12 +33,12 @@ for d in $d_tilde;do
     echo "  <Input>config/vbf_cp_${d}/channel/category_OO_${cat}.xml</Input>" >> $out_xml
   done
 
-  echo "  <POI>mu_VBF_SM,mu_VBF_RW,mu</POI>" >> $out_xml
+  echo "  <POI>mu_VBF_RW,mu_VBF_SM,mu_ggH,mu_ggH_SM,mu</POI>" >> $out_xml
   echo "" >> $out_xml
 
   #echo "  <Asimov Name=\"asimovData_SM_noFit\"   Setup=\"mu_VBF_RW=0,mu_VBF_SM=1,mu=1\"     Action=\"raw:fixall:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_SM_noFit\" SnapshotGlob=\"nominalGlob_SM_noFit\"/>" >> $out_xml # PE b, c
   echo "  <Asimov Name=\"asimovData_B_blind\"   Setup=\"mu=0\"     Action=\"fixsyst:fit:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_B_blindFit\" SnapshotGlob=\"nominalGlob_B_blindFit\"/>" >> $out_xml
-  echo "  <Asimov Name=\"asimovData_SB_SM\"  Setup=\"mu=1,mu_VBF_RW=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
+  echo "  <Asimov Name=\"asimovData_SB_SM\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
   echo "" >> $out_xml
 
   echo "</Combination>" >> $out_xml
