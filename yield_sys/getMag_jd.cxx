@@ -1,7 +1,7 @@
 //#include "sysUtils.h"
 #include "../shape_sys/sysUtils.h"
 
-void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
+void getMag_jd(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   char *cf_cats = (char*)"../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -71,7 +71,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   // file path list
   //TString dirpath = "/scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/";
-  TString dirpath = "../../ntuples/sys/yield/";
+  TString dirpath = "/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/jetsysdata/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -94,7 +94,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
   std::vector<TString> sysList;
   sysList.clear();
   if(doSys) {
-    getSysList("/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/yield/mc16a/343981_ggF_allSys.root", sysList);
+    getSysList("/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/jetsysdata/mc16a/343981_ggF_jetsysdata.root", sysList);
     //getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/346214_VBF_allSys.root", sysList);
     cout<<endl<<"sys list got"<<endl;
   }
@@ -244,14 +244,14 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
       //if((int)calc_sysList.size()>0) break;
     }// end syst
   
-    TString dirName = "csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+    TString dirName = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
     TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
     system(tsCommand.Data());
  
     // fill csv file
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        ofstream ofsyst(Form("csv/Collect_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream ofsyst(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
         if(!ofsyst){
           ofsyst.close();
           cout<<"error can't open file for record"<<endl;
@@ -270,7 +270,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
         std::vector<TString> dToSave = {"m02", "m00", "p02", "SM"};
         if(std::find(dToSave.begin(), dToSave.end(), d->first) == dToSave.end()) continue;
-        ofstream yofsyst(Form("csv/Collect_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream yofsyst(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
         if(!yofsyst){
           yofsyst.close();
           cout<<"error can't open file for yield"<<endl;
@@ -298,9 +298,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
     }
 
     // fill nominal yields
-    ofstream ofyield_clear(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield_clear(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
     ofyield_clear.close();
-    ofstream ofyield(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
     if(!ofyield){
       ofyield.close();
       cout<<"error can't open file for record"<<endl;
@@ -331,6 +331,6 @@ int main(int argc, char* argv[]){
   int sampleID = std::atoi(argv[1]);
   int init = std::atoi(argv[2]);
   int fin = std::atoi(argv[3]);
-  getMag(sampleID,init,fin);
+  getMag_jd(sampleID,init,fin);
   return 0;
 }
