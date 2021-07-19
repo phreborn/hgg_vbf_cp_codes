@@ -8,6 +8,7 @@
 #endif
 
 #include "../shape_sys/sysUtils.h"
+#include "ioUtils.h"
 
 void variationYield(){
   SetAtlasStyle();
@@ -71,10 +72,11 @@ void variationYield(){
         std::vector<float> vd;
       
         ifstream file;
-        file.open(Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data()));
+        string filepath = Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data());
+        file.open(filepath);
         if( ! file.is_open())
         {
-            cout<<"can not open file! "<<Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data())<<endl;
+            cout<<"can not open file! "<<filepath<<endl;
             return;
         }
         char tmp[1000];
@@ -97,6 +99,10 @@ void variationYield(){
           if(line != "") vd.push_back(atof(line.substr(ptmp+1, pos-ptmp-1).data()));
           else vd.push_back(0.);
         }
+
+        TString jdfpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_jd/mag_yield_"+id+"_"+dName+"_"+cat+".csv";
+        std::map<TString, std::pair<float,float>> sysud;
+        getVariation(jdfpath, sysud);
       
         gStyle->SetPadBottomMargin(0.41);
       
@@ -106,8 +112,8 @@ void variationYield(){
         TAxis *axis = hu->GetXaxis();
         for(int i = 0; i < nsys; i++){
           axis->SetBinLabel(i+1, sys[i]);
-          hu->Fill(i, vu[i]);
-          hd->Fill(i, vd[i]);
+          hu->Fill(i, sys[i].Contains("JER_EffectiveNP") ? sysud[sys[i]].first : vu[i]);
+          hd->Fill(i, sys[i].Contains("JER_EffectiveNP") ? sysud[sys[i]].second : vd[i]);
           cout<<sys[i]<<": "<<vu[i]<<", "<<vd[i]<<endl;
         }
         axis->SetLabelSize(0.03);
@@ -136,6 +142,7 @@ void variationYield(){
         myText(0.22, 0.88, 1, (sample+",  "+cat+",  yield").Data());
 
         canv->SaveAs("plotFit/yieldVari_"+sample+"_"+dName+"_"+cat+".png");
+        canv->SaveAs("plotFit/yieldVari_"+sample+"_"+dName+"_"+cat+".pdf");
       }
     }
   }

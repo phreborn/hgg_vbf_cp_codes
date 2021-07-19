@@ -25,7 +25,9 @@ shape_sys/plotFit/build/
 *xml
 *root
 *png
+*pdf
 *core.*
 
 exe_*.sh
 hep_sub_*/
+submit_Collect*/
