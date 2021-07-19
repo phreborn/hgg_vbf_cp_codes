@@ -116,7 +116,7 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     echo "    <NormFactor Name=\"yield_ggH_SM[${y_ggH}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
