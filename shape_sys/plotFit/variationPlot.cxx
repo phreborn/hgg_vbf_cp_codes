@@ -14,7 +14,7 @@
 using namespace RooFit;
 
 void variationPlot(TString sys){
-  TString workarea = "/scratchfs/atlas/chenhr/atlaswork/VBF_CP/syst/shape_sys/plotFit/";
+  TString workarea = "/scratchfs/atlas/huirun/atlaswork/VBF_CP/syst/shape_sys/plotFit/";
 
   char *cf_cats = (char*)"../../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -26,7 +26,7 @@ void variationPlot(TString sys){
   TFile *fdown = new TFile(workarea+"/ws_"+sys+"__1down_m00.root", "read");
 
   for(auto cat : catCuts){
-    if(cat.first != "TT_b1") continue;
+    //if(cat.first != "TT_b1") continue;
     TCanvas *canv = new TCanvas("c", "canvas", 800, 600);
     TPad *pad1 = new TPad("pad1", "pad1", 0, 0., 0.7, 1.0);
     TPad *pad2 = new TPad("pad2", "pad2", 0.7, 0.5, 1, 1.0);
@@ -71,7 +71,8 @@ void variationPlot(TString sys){
     wsup->pdf(("sig_"+cat.first).Data())->plotOn(myy_frame3, LineStyle(kDashed), LineColor(kViolet), LineWidth(1));
     myy_frame3->Draw();
 
-    canv->SaveAs("plot_"+sys+"_m00_"+cat.first+".png");
+    canv->SaveAs("shapeVariation/plot_"+sys+"_m00_"+cat.first+".png");
+    canv->SaveAs("shapeVariation/plot_"+sys+"_m00_"+cat.first+".pdf");
   }
 }
 
