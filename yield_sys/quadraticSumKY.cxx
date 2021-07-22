@@ -89,28 +89,28 @@ void quadraticSumKY(){
         int ibin = bin.second;
         TString bName = bin.first;
         TString cbin = cat+"_"+bName; cout<<endl<<cbin<<endl;
-  
-        std::vector<TString> sys;
-        std::vector<float> vu;
-        std::vector<float> vd;
-        if(!getVariY(cbin.Data(), sys, vu, vd)) continue;
+
+        TString fpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_346214_m00_"+cbin+".csv";
+        std::map<TString, std::pair<float,float>> sysud;
+        if(!getVariY(fpath, sysud)) continue;
+
+        TString jerfpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_jd/mag_yield_346214_m00_"+cbin+".csv";
+        std::map<TString, std::pair<float,float>> jersysud;
+        if(!getVariY(jerfpath, jersysud)) continue;
 
         map<string, pair<float, float>> sysV;
-        int nsys = sys.size();
-        for(int i = 0; i < nsys; i++){
-          string sysName(sys[i].Data());
-          float yu = vu[i];
-          float yd = vd[i];
+        for(auto sys : sysud){
+          string sysName(sys.first.Data());
+          float yu = sysName.find("JER_EffectiveNP") != std::string::npos ? jersysud[sysName.data()].first : sys.second.first;
+          float yd = sysName.find("JER_EffectiveNP") != std::string::npos ? jersysud[sysName.data()].second : sys.second.second;
           float ku = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Up");
           float kd = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Down");
-          float yku = qdrYK(yu, ku);
-          float ykd = qdrYK(yd, kd);
-          //cout<<yu<<", "<<ku<<": "<<yku<<endl;
-          //cout<<yd<<", "<<kd<<": "<<ykd<<endl;
+          float yku = qdrYK(yu, ku); cout<<yu<<", "<<ku<<": "<<yku<<endl;
+          float ykd = qdrYK(yd, kd); cout<<yd<<", "<<kd<<": "<<ykd<<endl;
           sysV[sysName] = make_pair(yku, ykd);
         }
         //string outxml = Form("sample_346214_%s_%s.xml", cHWName.data(), cbin.Data());
-        string outxml = Form("csv/mag_yield_346214_%s_%s.csv", cHWName.data(), cbin.Data());
+        string outxml = Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_346214_%s_%s.csv", cHWName.data(), cbin.Data());
         writeXml(sysV, outxml);
       }
     }

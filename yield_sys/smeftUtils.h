@@ -112,17 +112,17 @@ float getVariKF(string sys = "JET_JER_DataVsMC_MC16", string cat = "LL", string 
   return 0.;
 }
 
-bool getVariY(TString cat, std::vector<TString> &sys, std::vector<float> &vu, std::vector<float> &vd){
+bool getVariY(TString fpath, map<TString, pair<float, float>> &sysud){
 //void getVariY(TString cat = "LL_b1"){
   /*std::vector<TString> sys;
   std::vector<float> vu;
   std::vector<float> vd;*/
  
   ifstream file;
-  file.open(Form("csv/mag_yield_346214_m00_%s.csv", cat.Data()));
+  file.open(fpath.Data());
   if( ! file.is_open())
   {
-      cout<<"can not open file! "<<Form("csv/mag_yield_346214_m00_%s.csv", cat.Data())<<endl;
+      cout<<"can not open file! "<<fpath<<endl;
       return false;
   }
   char tmp[1000];
@@ -132,9 +132,10 @@ bool getVariY(TString cat, std::vector<TString> &sys, std::vector<float> &vu, st
     size_t ptmp;
 
     if(line == "") continue;
- 
+
+    TString sys = "";
     size_t pos = line.find(','); //std::cout<<line.substr(0,pos)<<std::endl;
-    if(pos!=string::npos) sys.push_back(line.substr(0,pos).data());
+    if(pos!=string::npos) sys = line.substr(0,pos).data();
     else continue;
  
     /*ptmp = pos;
@@ -149,9 +150,7 @@ bool getVariY(TString cat, std::vector<TString> &sys, std::vector<float> &vu, st
 
     float utmp = atof(getTok(line, 1).data()); //cout<<utmp<<endl;
     float dtmp = atof(getTok(line, 2).data()); //cout<<dtmp<<endl;
-
-    vu.push_back(utmp);
-    vd.push_back(dtmp);
+    sysud[sys] = std::make_pair(utmp, dtmp); //cout<<sys<<": "<<utmp<<","<<dtmp<<endl;
   }
   return true;
 }
