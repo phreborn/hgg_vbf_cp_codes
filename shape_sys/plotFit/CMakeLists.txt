@@ -39,3 +39,5 @@ target_link_libraries(lVariationPlot ${PROJECT_LIBRARIES})
 # Create a main program using the library
 add_executable(variationPlot.exe variationPlot.cxx)
 target_link_libraries(variationPlot.exe lVariationPlot ${PROJECT_LIBRARIES})
+add_executable(variPlot_idvProc.exe variPlot_idvProc.cxx)
+target_link_libraries(variPlot_idvProc.exe lVariationPlot ${PROJECT_LIBRARIES})

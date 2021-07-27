@@ -1,8 +1,10 @@
 #!/bin/bash
 
-mufiles=$(ls /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_1_1/ | grep -v para_Nom)
+basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
+
+mufiles=$(ls ${basedir}/csv/Collect_1_1/ | grep -v para_Nom)
 for f in ${mufiles};do
-  > csv/${f}
+  > ${basedir}/csv/${f}
 done
 
 sequence=($(seq 1 1 82))
@@ -11,8 +13,8 @@ for init in ${sequence[@]};do
   fin=$((${init} + ${intvl}))
   jobName=Collect_${init}_${fin}; echo ${jobName}
   for f in ${mufiles};do
-    cat /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/${jobName}/${f} >> csv/${f}
+    cat ${basedir}/csv/${jobName}/${f} >> ${basedir}/csv/${f}
   done
 done
 
-cp /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_1_1/para_Nom.csv csv/
+cp ${basedir}/csv/Collect_1_1/para_Nom.csv ${basedir}/csv/

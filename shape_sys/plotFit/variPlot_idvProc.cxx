@@ -13,7 +13,7 @@
 
 using namespace RooFit;
 
-void variationPlot(TString sys){
+void variPlot_idvProc(TString sys, TString prc){
   TString workarea = "/scratchfs/atlas/huirun/atlaswork/VBF_CP/syst/shape_sys/plotFit/";
 
   char *cf_cats = (char*)"../../../nom_WS/cats.cfg";
@@ -39,8 +39,9 @@ void variationPlot(TString sys){
 
     RooWorkspace *wsnom = (RooWorkspace*)fnom->Get("ws");
     wsnom->var("m_yy")->setRange("SR", 118000, 132000);
-    RooPlot* myy_frame = wsnom->var("m_yy")->frame(Title(cat.first));
-    wsnom->data(("dh_myy_sig_"+cat.first).Data())->plotOn(myy_frame, MarkerSize(0.1), DataError(RooAbsData::None), Binning(550));
+    RooPlot* myy_frame = wsnom->var("m_yy")->frame(Title(prc+" "+cat.first));
+    wsnom->pdf(("sig_"+cat.first).Data())->fitTo(*(wsnom->data(("dh_myy_"+prc+"_"+cat.first).Data())));
+    wsnom->data(("dh_myy_"+prc+"_"+cat.first).Data())->plotOn(myy_frame, MarkerSize(0.1), DataError(RooAbsData::None), Binning(550));
     wsnom->pdf(("sig_"+cat.first).Data())->plotOn(myy_frame, LineWidth(1), Range(118000, 132000));
   
     RooWorkspace *wsup = (RooWorkspace*)fup->Get("ws");
@@ -58,7 +59,8 @@ void variationPlot(TString sys){
     pad2->Draw();
     pad2->cd();
     RooPlot* myy_frame2 = wsnom->var("m_yy")->frame(Title(sys+"_up"));
-    wsup->data(("dh_myy_sig_"+cat.first).Data())->plotOn(myy_frame2, MarkerSize(0.25));
+    wsup->pdf(("sig_"+cat.first).Data())->fitTo(*(wsup->data(("dh_myy_"+prc+"_"+cat.first).Data())));
+    wsup->data(("dh_myy_"+prc+"_"+cat.first).Data())->plotOn(myy_frame2, MarkerSize(0.25));
     wsup->pdf(("sig_"+cat.first).Data())->plotOn(myy_frame2, LineStyle(kDashed), LineColor(kGreen), LineWidth(1));
     myy_frame2->Draw();
 
@@ -67,17 +69,19 @@ void variationPlot(TString sys){
     pad3->Draw();
     pad3->cd();
     RooPlot* myy_frame3 = wsnom->var("m_yy")->frame(Title(sys+"_down"));
-    wsdown->data(("dh_myy_sig_"+cat.first).Data())->plotOn(myy_frame3, MarkerSize(0.25));
+    wsdown->pdf(("sig_"+cat.first).Data())->fitTo(*(wsdown->data(("dh_myy_"+prc+"_"+cat.first).Data())));
+    wsdown->data(("dh_myy_"+prc+"_"+cat.first).Data())->plotOn(myy_frame3, MarkerSize(0.25));
     wsdown->pdf(("sig_"+cat.first).Data())->plotOn(myy_frame3, LineStyle(kDashed), LineColor(kViolet), LineWidth(1));
     myy_frame3->Draw();
 
-    canv->SaveAs("shapeVariation/plot_"+sys+"_m00_"+cat.first+".png");
-    canv->SaveAs("shapeVariation/plot_"+sys+"_m00_"+cat.first+".pdf");
+    canv->SaveAs("shapeVariation/plot_"+prc+"_"+sys+"_m00_"+cat.first+".png");
+    canv->SaveAs("shapeVariation/plot_"+prc+"_"+sys+"_m00_"+cat.first+".pdf");
   }
 }
 
 int main(int argc, char* argv[]){
   TString sys = TString(argv[1]);
-  variationPlot(sys);
+  std::vector<TString> procs = {"ggH", "VBF"};
+  for(auto prc : procs) variPlot_idvProc(sys, prc);
   return 1;
 }

@@ -25,10 +25,14 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
     for(auto cat : cats){
       cout<<endl<<"========= "<<sys+"_"+d->first+"_"+cat.first<<" ========="<<endl<<endl;
 
+      TH1F h_VBF = *(hist_VBF[sys+"_"+d->first+"_"+cat.first]);
+      TH1F h_ggH = *(hist_ggH[sys+"_SM_"+cat.first]);
       TH1F hist_sig = *(hist_ggH[sys+"_SM_"+cat.first]) + *(hist_VBF[sys+"_"+d->first+"_"+cat.first]);
 
       RooRealVar myy("m_yy","myy",105000,160000);
 
+      RooDataHist dh_myy_VBF("dh_myy_VBF_"+cat.first,"dh_myy_VBF", myy, Import(h_VBF));
+      RooDataHist dh_myy_ggH("dh_myy_ggH_"+cat.first,"dh_myy_ggH", myy, Import(h_ggH));
       RooDataHist dh_myy_sig("dh_myy_sig_"+cat.first,"dh_myy_sig", myy, Import(hist_sig));
 
       RooRealVar mean("mean_"+cat.first,"mean",120000,130000);
@@ -62,6 +66,8 @@ void getFitPara(map<TString, vector<double>> &para, vector<std::string> files, T
         ws->import(alpha2);
         ws->import(dh_myy_sig);
         ws->import(DSCB_myy);
+        ws->import(dh_myy_VBF);
+        ws->import(dh_myy_ggH);
       }
 
       para[sys+"_"+d->first+"_"+cat.first].clear();
@@ -144,7 +150,7 @@ void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
   cats["LL"] = {-1, 0.14, -1., 0.05};
 
   // file path list
-  TString dirpath = "/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/";
+  TString dirpath = "/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/shape/";
   std::string path_str = dirpath.Data();
   std::vector<std::string> sub_dirs = getDirBinsSortedPath(path_str);
 
@@ -166,7 +172,7 @@ void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   std::vector<TString> sysList;
   sysList.clear();
-  if(doSys) getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/shape/mc16a/343981_ggF_allSys.root", sysList);
+  if(doSys) getSysList("/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/shape/mc16a/343981_ggF_allSys.root", sysList);
   else sysList.push_back("Nominal");
 
   // get syst list
@@ -288,12 +294,12 @@ void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
   }// end syst
 
 
-  TString dirName = "csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+  TString dirName = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
   TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
   system(tsCommand.Data());
 
   // fill csv file
-  ofstream ofpara_Nom(Form("csv/Collect_%i_%i/para_Nom.csv", iSysInit, iSysFin), ios::out);
+  ofstream ofpara_Nom(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%i_%i/para_Nom.csv", iSysInit, iSysFin), ios::out);
   if(!ofpara_Nom){
     ofpara_Nom.close();
     cout<<"error can't open file for record"<<endl;
@@ -305,13 +311,13 @@ void getMag(int iSysInit = 1, int iSysFin = 1, bool doSys = true){
 
   for(auto cat : catCuts){
    for(auto d = d_map.begin(); d != d_map.end(); d++){
-      ofstream ofmu(Form("csv/Collect_%i_%i/mu_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
+      ofstream ofmu(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%i_%i/mu_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
       if(!ofmu){
         ofmu.close();
         cout<<"error can't open file for record"<<endl;
       }
     
-      ofstream ofsigma(Form("csv/Collect_%i_%i/sigma_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
+      ofstream ofsigma(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%i_%i/sigma_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin), ios::out);
       if(!ofsigma){
         ofsigma.close();
         cout<<"error can't open file for record"<<endl;
