@@ -16,7 +16,7 @@ for init in ${sequence[@]};do
 
   echo "#!/bin/bash" >> exe_${jobName}.sh
   echo "" >> exe_${jobName}.sh
-  echo "cd /scratchfs/atlas/chenhr/atlaswork/VBF_CP/syst/shape_sys" >> exe_${jobName}.sh
+  echo "cd /scratchfs/atlas/huirun/atlaswork/VBF_CP/syst/shape_sys" >> exe_${jobName}.sh
   echo "export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase" >> exe_${jobName}.sh
   echo "source \${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh" >> exe_${jobName}.sh
   echo "lsetup \"root 6.20.06-x86_64-centos7-gcc8-opt\"" >> exe_${jobName}.sh
