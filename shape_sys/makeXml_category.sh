@@ -89,14 +89,15 @@ fillSys(){
   echo ${resp_Prod} >> $ofsys
 }
 
+basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
 
 for d in  $d_tilde ; do
   for cat in $cats ; do
 #for d in  p01 ; do
 #  for cat in TL_b2 ; do
     echo "====== ${d}_${cat} ======"
-    ifcsv_mu="csv/mu_${d}_${cat}.csv";
-    ifcsv_sigma="csv/sigma_${d}_${cat}.csv";
+    ifcsv_mu="${basedir}/csv/mu_${d}_${cat}.csv";
+    ifcsv_sigma="${basedir}/csv/sigma_${d}_${cat}.csv";
     ofxml="xml/shape_${d}_${cat}.xml"; #echo $ofxml
     > $ofxml
     fillSys RES $ifcsv_sigma $ofxml
