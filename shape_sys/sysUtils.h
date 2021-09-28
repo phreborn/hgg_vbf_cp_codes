@@ -245,7 +245,7 @@ void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<
     auto df_base = df.Filter(baseCuts_sys);
 
     float campLumi = camp->second;
-    auto df_wt = df_base.Define("wt", [&sumOfWeights, &campLumi](float xsec, float weight){ return (float) (campLumi*xsec*weight/sumOfWeights); }, {Form("%s_xsec_kF_eff", syst.Data()), Form("%s_weight_catCoup_XGBoost_ttH", syst.Data())});
+    auto df_wt = df_base.Define("wt", [&sumOfWeights, &campLumi](float xsec, float weight, float wjvt, float wfjvt){ return (float) (campLumi*xsec*weight*wjvt*wfjvt/sumOfWeights); }, {Form("%s_xsec_kF_eff", syst.Data()), Form("%s_weight", syst.Data()), Form("%s_weightJvt_30", syst.Data()), Form("%s_weightFJvt_30", syst.Data())});
 
     for(auto cat : cats){
       string catCuts_sys = TString(cat.second.data()).ReplaceAll("??", syst+"_").Data();
