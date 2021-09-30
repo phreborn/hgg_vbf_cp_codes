@@ -75,12 +75,12 @@ for id in 346214 ; do
       echo ======= ${d}_${cat} =======
       echo ""
       ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${cat}.csv";
-      ifcsv_exp="${basepath}/csv/mag_yield_${id}_${d}_${cat}.csv";
+      ifcsv_exp="csv/mag_yield_${id}_${d}_${cat}.csv";
       ifcsv_exp_jd="${basepath}/csv_jd/mag_yield_${id}_${d}_${cat}.csv";
       ifcsv_tmp="csv/tmp_${id}_${d}_${cat}.csv"
       > $ifcsv_tmp
-      cat $ifcsv_exp | grep -v "JER_EffectiveNP" >> $ifcsv_tmp
-      cat $ifcsv_exp_jd | grep "JER_EffectiveNP" >> $ifcsv_tmp
+      cat $ifcsv_exp | grep -v "JER_" >> $ifcsv_tmp
+      cat $ifcsv_exp_jd | grep "JER_" >> $ifcsv_tmp
       cat $ifcsv_theo >> $ifcsv_tmp
       ofxml="xml/sample_${id}_${d}_${cat}.xml"; #echo $ofxml
       fillSys $id $ifcsv_tmp $ofxml
@@ -95,12 +95,12 @@ for id in 343981; do
     echo ======= ${id}_${cat} =======
     echo ""
     ifcsv_theo="TheorySys/mag_theory_${id}_SM_${cat}.csv";
-    ifcsv_exp="${basepath}/csv/mag_yield_${id}_SM_${cat}.csv";
+    ifcsv_exp="csv/mag_yield_${id}_SM_${cat}.csv";
     ifcsv_exp_jd="${basepath}/csv_jd/mag_yield_${id}_SM_${cat}.csv";
     ifcsv_tmp="csv/tmp_${id}_SM_${cat}.csv"
     > $ifcsv_tmp
-    cat $ifcsv_exp | grep -v "JER_EffectiveNP" >> $ifcsv_tmp
-    cat $ifcsv_exp_jd | grep "JER_EffectiveNP" >> $ifcsv_tmp
+    cat $ifcsv_exp | grep -v "JER_" >> $ifcsv_tmp
+    cat $ifcsv_exp_jd | grep "JER_" >> $ifcsv_tmp
     cat $ifcsv_theo >> $ifcsv_tmp
     ofxml="xml/sample_${id}_SM_${cat}.xml";
     fillSys $id $ifcsv_tmp $ofxml

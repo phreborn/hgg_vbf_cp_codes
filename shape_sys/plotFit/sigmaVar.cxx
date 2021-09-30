@@ -72,10 +72,10 @@ void sigmaVar(){
         std::vector<float> vd;
       
         ifstream file;
-        file.open(Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data()));
+        file.open(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/sigma_%s_%s.csv", dName.Data(), cat.Data()));
         if( ! file.is_open())
         {
-            cout<<"can not open file! "<<Form("../csv/sigma_%s_%s.csv", dName.Data(), cat.Data())<<endl;
+            cout<<"can not open file! "<<Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/sigma_%s_%s.csv", dName.Data(), cat.Data())<<endl;
             return;
         }
         char tmp[1000];
@@ -137,7 +137,7 @@ void sigmaVar(){
         lg->AddEntry(hu, "up", "l");
         lg->AddEntry(hd, "down", "l");
       
-        hu->GetYaxis()->SetTitle("(vari.-nom.)/nom.");
+        hu->GetYaxis()->SetTitle("(var.-nom.)/nom.");
       
         hu->SetLineColor(kRed);
         hd->SetLineColor(kBlue);

@@ -112,8 +112,8 @@ void variationYield(){
         TAxis *axis = hu->GetXaxis();
         for(int i = 0; i < nsys; i++){
           axis->SetBinLabel(i+1, sys[i]);
-          hu->Fill(i, sys[i].Contains("JER_EffectiveNP") ? sysud[sys[i]].first : vu[i]);
-          hd->Fill(i, sys[i].Contains("JER_EffectiveNP") ? sysud[sys[i]].second : vd[i]);
+          hu->Fill(i, sys[i].Contains("JER_") ? sysud[sys[i]].first : vu[i]);
+          hd->Fill(i, sys[i].Contains("JER_") ? sysud[sys[i]].second : vd[i]);
           cout<<sys[i]<<": "<<vu[i]<<", "<<vd[i]<<endl;
         }
         axis->SetLabelSize(0.03);
@@ -129,7 +129,7 @@ void variationYield(){
         lg->AddEntry(hu, "up", "l");
         lg->AddEntry(hd, "down", "l");
       
-        hu->GetYaxis()->SetTitle("(vari.-nom.)/nom.");
+        hu->GetYaxis()->SetTitle("(var.-nom.)/nom.");
       
         hu->SetLineColor(kRed);
         hd->SetLineColor(kBlue);
