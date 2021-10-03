@@ -58,7 +58,7 @@ void JER_variation(){
         std::map<string, std::pair<float,float>> mdsysud;
         for(auto sys : dsysud){
           TString sysName = sys.first;
-          if(!sysName.Contains("JER_EffectiveNP")) continue;
+          if(!sysName.Contains("JER_")) continue;
           float mvu = msysud[sysName].first;
           float mvd = msysud[sysName].second;
           float dvu = dsysud[sysName].first;

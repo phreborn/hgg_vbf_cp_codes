@@ -90,7 +90,7 @@ void quadraticSumKY(){
         TString bName = bin.first;
         TString cbin = cat+"_"+bName; cout<<endl<<cbin<<endl;
 
-        TString fpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_346214_m00_"+cbin+".csv";
+        TString fpath = "csv/mag_yield_346214_m00_"+cbin+".csv";
         std::map<TString, std::pair<float,float>> sysud;
         if(!getVariY(fpath, sysud)) continue;
 
@@ -101,8 +101,8 @@ void quadraticSumKY(){
         map<string, pair<float, float>> sysV;
         for(auto sys : sysud){
           string sysName(sys.first.Data());
-          float yu = sysName.find("JER_EffectiveNP") != std::string::npos ? jersysud[sysName.data()].first : sys.second.first;
-          float yd = sysName.find("JER_EffectiveNP") != std::string::npos ? jersysud[sysName.data()].second : sys.second.second;
+          float yu = sysName.find("JER_") != std::string::npos ? jersysud[sysName.data()].first : sys.second.first;
+          float yd = sysName.find("JER_") != std::string::npos ? jersysud[sysName.data()].second : sys.second.second;
           float ku = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Up");
           float kd = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Down");
           float yku = qdrYK(yu, ku); cout<<yu<<", "<<ku<<": "<<yku<<endl;
