@@ -72,7 +72,7 @@ void variationYield(){
         std::vector<float> vd;
       
         ifstream file;
-        string filepath = Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data());
+        string filepath = Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data());
         file.open(filepath);
         if( ! file.is_open())
         {

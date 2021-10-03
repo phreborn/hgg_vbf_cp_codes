@@ -47,7 +47,7 @@ void JER_variation(){
         TString dName = d.first;
         TString catName = cat.first;
 
-        TString mfpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
+        TString mfpath = "csv/mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
         std::map<TString, std::pair<float,float>> msysud;
         getVariation(mfpath, msysud);
 
