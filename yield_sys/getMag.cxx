@@ -1,7 +1,7 @@
 //#include "sysUtils.h"
 #include "../shape_sys/sysUtils.h"
 
-void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
+void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, TString sysSet = "photonsys", bool doSys = true){
 
   char *cf_cats = (char*)"../../nom_WS/cats.cfg";
   map<TString, string> catCuts;
@@ -85,6 +85,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
     for(auto f : fs){
       if(f==".") continue;
       if(f.find(".root")==std::string::npos) continue;
+      if(f.find(sysSet.Data())==std::string::npos) continue;
       cout<<"f: "<<path_str+"/"+d+"/"+f<<endl;
       files.push_back(path_str+d+"/"+f);
 
@@ -94,7 +95,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
   std::vector<TString> sysList;
   sysList.clear();
   if(doSys) {
-    getSysList("/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/yield/mc16a/343981_ggF_allSys.root", sysList);
+    getSysList("/scratchfs/atlas/huirun/atlaswork/VBF_CP/ntuples/sys/yield/mc16a/343981_ggF_"+sysSet+".root", sysList);
     //getSysList("/scratchfs/atlas/chenhr/atlaswork/VBF_CP/ntuples/sys/yield/mc16e/346214_VBF_allSys.root", sysList);
     cout<<endl<<"sys list got"<<endl;
   }
@@ -244,14 +245,14 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
       //if((int)calc_sysList.size()>0) break;
     }// end syst
   
-    TString dirName = "csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+    TString dirName = "csv/"+TString(Form("Collect_%s_%i_%i", sysSet.Data(), iSysInit, iSysFin));
     TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
     system(tsCommand.Data());
  
     // fill csv file
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        ofstream ofsyst(Form("csv/Collect_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream ofsyst(Form("csv/Collect_%s_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
         if(!ofsyst){
           ofsyst.close();
           cout<<"error can't open file for record"<<endl;
@@ -270,7 +271,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
         std::vector<TString> dToSave = {"m02", "m00", "p02", "SM"};
         if(std::find(dToSave.begin(), dToSave.end(), d->first) == dToSave.end()) continue;
-        ofstream yofsyst(Form("csv/Collect_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream yofsyst(Form("csv/Collect_%s_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
         if(!yofsyst){
           yofsyst.close();
           cout<<"error can't open file for yield"<<endl;
@@ -298,9 +299,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = true){
     }
 
     // fill nominal yields
-    ofstream ofyield_clear(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield_clear(Form("csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
     ofyield_clear.close();
-    ofstream ofyield(Form("csv/Collect_%i_%i/N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield(Form("csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
     if(!ofyield){
       ofyield.close();
       cout<<"error can't open file for record"<<endl;
@@ -331,6 +332,7 @@ int main(int argc, char* argv[]){
   int sampleID = std::atoi(argv[1]);
   int init = std::atoi(argv[2]);
   int fin = std::atoi(argv[3]);
-  getMag(sampleID,init,fin);
+  TString sysSet(argv[4]);
+  getMag(sampleID,init,fin,sysSet);
   return 0;
 }
