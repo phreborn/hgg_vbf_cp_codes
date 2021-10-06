@@ -149,6 +149,7 @@ void muVar(){
         myText(0.22, 0.88, 1, (cat+",  photon scale,  #mu_{CB}").Data());
 
         canv->SaveAs("muVari_"+dName+"_"+cat+".png");
+        canv->SaveAs("muVari_"+dName+"_"+cat+".pdf");
       }
     }
   }

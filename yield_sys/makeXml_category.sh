@@ -7,6 +7,8 @@ cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 d_tilde=$(ls csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
 
+if [ $1 = "-d" ];then d_tilde=$2;fi
+
 echo $d_tilde
 echo $cats
 
@@ -89,6 +91,7 @@ for id in 346214 ; do
   done
 done
 
+if [[ "$1" != "-d" ]] || [[ "$2" = "m00" ]]; then
 for id in 343981; do
   for cat in $cats ; do
     echo ""
@@ -107,5 +110,6 @@ for id in 343981; do
     rm $ifcsv_tmp
   done
 done
+fi
 
 #fillSys $mcID $ifsys $ofsys 

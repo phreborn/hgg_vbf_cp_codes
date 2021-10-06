@@ -1,6 +1,6 @@
 #ifdef __CLING__
-#include "/scratchfs/atlas/chenhr/atlaswork/ATLAS_style/atlasrootstyle/AtlasLabels.C"
-#include "/scratchfs/atlas/chenhr/atlaswork/ATLAS_style/atlasrootstyle/AtlasUtils.C"
+#include "/scratchfs/atlas/huirun/atlaswork/ATLAS_style/atlasrootstyle/AtlasLabels.C"
+#include "/scratchfs/atlas/huirun/atlaswork/ATLAS_style/atlasrootstyle/AtlasUtils.C"
 #endif
 
 #include "../../shape_sys/sysUtils.h"
@@ -48,12 +48,12 @@ void VBF(){
   std::vector<TString> bdtCats = {"TT", "TL", "LT", "LL"};
 
   std::map<int, TString> bins;
-  bins[1] = "-99:-2";
+  bins[1] = "-20:-2";
   bins[2] = "-2:-1";
   bins[3] = "-1:0";
   bins[4] = "0:1";
   bins[5] = "1:2";
-  bins[6] = "2:99";
+  bins[6] = "2:20";
 
   std::map<TString, TString> ids;
   ids["vbf"] = "346214";

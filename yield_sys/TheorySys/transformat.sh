@@ -1,6 +1,6 @@
 #! /bin/bash
 
-inpath=/scratchfs/atlas/chenhr/atlaswork/VBF_CP/syst/yield_sys/TheorySys/Cat
+inpath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/TheorySys_updatedBDT
 
 #mv VBF_theorySys_d2.63e-08.txt VBF_theorySys_d0.00.txt
 #mv ggF_theorySys_d2.63e-08.txt ggF_theorySys_d0.00.txt

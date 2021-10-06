@@ -150,6 +150,7 @@ void sigmaVar(){
         myText(0.22, 0.88, 1, (cat+",  EG_RESOLUTION,  #sigma_{CB}").Data());
 
         canv->SaveAs("sigmaVari_"+dName+"_"+cat+".png");
+        canv->SaveAs("sigmaVari_"+dName+"_"+cat+".pdf");
       }
     }
   }
