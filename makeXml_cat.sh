@@ -3,6 +3,9 @@
 includeSys=1
 SSAvailable=1
 
+injectTest=1
+injectPoint=m03
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
@@ -45,6 +48,8 @@ for cat in $cats;do
   sys_VBF_SM=$(cat yield_sys/xml/sample_346214_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
 
   spurious=$(cat shape_sys/bkg_SS.csv | grep ${cat} | cut -d , -f 3)
+
+  y_VBF_injectTest=$(cat ${sig_para} | grep "VBF_${injectPoint}_${cat}," | cut -d ',' -f 2)
 
   for d in $d_tilde;do
   #for d in m00 p05;do
@@ -111,6 +116,22 @@ for cat in $cats;do
     echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
+
+    if [ $injectTest -eq 1 ];then
+      echo "  <Sample Name=\"VBF_${injectPoint}\" InputFile=\"config/vbf_cp_${injectPoint}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "    <NormFactor Name=\"yield_VBF_${injectPoint}[${y_VBF_injectTest}]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+      echo "    <NormFactor Name=\"mu_VBF_${injectPoint}[1]\" />" >> $out_xml
+      echo "  </Sample>" >> $out_xml
+      echo "" >> $out_xml
+
+      echo "  <Sample Name=\"ggH_${injectPoint}\" InputFile=\"config/vbf_cp_${injectPoint}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "    <NormFactor Name=\"yield_ggH_${injectPoint}[${y_ggH}]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+      echo "    <NormFactor Name=\"mu_ggH_${injectPoint}[1]\" />" >> $out_xml # can be used for turn on/off a process
+      echo "  </Sample>" >> $out_xml
+      echo "" >> $out_xml
+    fi
 
     echo "  <Sample Name=\"VBF_RW\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
