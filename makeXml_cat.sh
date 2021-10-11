@@ -3,7 +3,7 @@
 includeSys=1
 SSAvailable=1
 
-injectTest=1
+injectTest=0
 injectPoint=m03
 
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)

@@ -13,6 +13,8 @@ cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep mag | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
 
+if [ $1 = "-d" ];then d_tilde=$2;fi
+
 echo $d_tilde
 echo $cats
 
@@ -70,10 +72,20 @@ fillSys(){
     if [ $wNum -eq 3 ];then
       if [ -n $ConstrType -a $ConstrType != "asym" ];then
         echo "UNMATCH constraint type and mag number, ${sys_name}"
-        echo "origin type ${ConstrType}, force asym"
-        ConstrType="asym"
+        tmag_u=$(echo ${mag_u} | sed 's/^-//g' | awk '{printf("%.8f",$0)}' | sed 's/0*$//g')
+        tmag_d=$(echo ${mag_d} | sed 's/^-//g' | awk '{printf("%.8f",$0)}' | sed 's/0*$//g')
+        tmag=
+        # bc bug with scientific notation
+        if [ `echo "${tmag_u} > ${tmag_d}" | bc` -eq 1 ];then
+          tmag=${mag_u}
+        else
+          tmag=${mag_d}
+        fi
+        fmag=$(echo ${tmag} | sed 's/^-//g')
+        echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${fmag}\" WhereTo=\"shape\"/>" >> $ofsys
+      else
+        echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u},${mag_d}\" WhereTo=\"shape\"/>" >> $ofsys
       fi
-      echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u},${mag_d}\" WhereTo=\"shape\"/>" >> $ofsys
     elif [ $wNum -eq 2 -a -n $ConstrType -a $ConstrType != "asym" ]; then
       echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u}\" WhereTo=\"shape\"/>" >> $ofsys
     else
