@@ -36,6 +36,10 @@ set(PROJECT_LIBRARIES ${ROOT_LIBRARIES} ${Boost_LIBRARIES})
 add_library(lGetMag SHARED src/RooTwoSidedCBShape.cxx G__GetMag.cxx)
 target_link_libraries(lGetMag ${PROJECT_LIBRARIES})
 
+## Create a main program using the library
+#add_executable(getMag.exe getMag.cxx)
+#target_link_libraries(getMag.exe lGetMag ${PROJECT_LIBRARIES})
+
 # Create a main program using the library
-add_executable(getMag.exe getMag.cxx)
-target_link_libraries(getMag.exe lGetMag ${PROJECT_LIBRARIES})
+add_executable(getMag_w1.exe getMag_w1.cxx)
+target_link_libraries(getMag_w1.exe lGetMag ${PROJECT_LIBRARIES})

@@ -25,7 +25,7 @@ for init in ${sequence[@]};do
   #echo "lsetup \"root 6.20.06-x86_64-centos7-gcc8-opt\"" >> exe_${jobName}.sh
   echo "rm -r csv/${jobName}" >> exe_${jobName}.sh
   for id in 346214 343981;do
-    echo "./getMag.exe ${id} ${init} ${fin} ${sysSet}" >> exe_${jobName}.sh
+    echo "./getMag_w1.exe ${id} ${init} ${fin} ${sysSet}" >> exe_${jobName}.sh
     echo "sleep 2" >> exe_${jobName}.sh
   done
 

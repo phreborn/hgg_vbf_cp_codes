@@ -253,7 +253,7 @@ void getMyyHist(map<TString, TH1F*> &hists, int mcID, TString syst, std::vector<
       for(auto d = d_tildes.begin(); d != d_tildes.end(); d++){
         double d_tilde = d->second;
         TString tsCampSysDtildeCat = camp->first+"_"+syst+"_"+d->first+"_"+cat.first;
-        auto df_wd = df_cat.Define("wd", [&d_tilde, &isVBF](float w1, float w2){ return (float) (isVBF? (1. + w1*d_tilde + w2*d_tilde*d_tilde) : 1.); }, {Form("%s_WeightDtilde1", syst.Data()), Form("%s_WeightDtilde2", syst.Data())});
+        auto df_wd = df_cat.Define("wd", [&d_tilde, &isVBF](float w1){ return (float) (isVBF? (1. + w1*d_tilde) : 1.); }, {Form("%s_WeightDtilde1", syst.Data())});
 
         df_wd.Foreach([&hists_tmp, &tsCampSysDtildeCat](float m_yy, float wt, float wd){ hists_tmp[tsCampSysDtildeCat]->Fill(m_yy, wt*wd); }, {Form("%s_m_yy", syst.Data()), "wt", "wd"});
       }// end d_tilde

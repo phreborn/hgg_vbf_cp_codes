@@ -13,7 +13,7 @@ echo $bin
 echo $cats
 
 rundir=".."
-ifpara="csv/para_Nom.csv"
+ifpara="../yield_sys/csv/w1/para_Nom.csv"
 
 for d in $d_tilde;do
 #for d in m00;do
