@@ -105,6 +105,8 @@ void quadraticSumKY(){
           float yd = sysName.find("JER_") != std::string::npos ? jersysud[sysName.data()].second : sys.second.second;
           float ku = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Up");
           float kd = getVariKF(sysName, cat.Data(), cHWNum, ibin, "Down");
+          if(std::abs(ku) > 0.1) { cout<<"Warning: |ku| > 10%, "<<ku<<", "<<cbin<<", "<<sys.first<<endl; ku = 0; }
+          if(std::abs(kd) > 0.1) { cout<<"Warning: |kd| > 10%, "<<kd<<", "<<cbin<<", "<<sys.first<<endl; kd = 0; }
           float yku = qdrYK(yu, ku); cout<<yu<<", "<<ku<<": "<<yku<<endl;
           float ykd = qdrYK(yd, kd); cout<<yd<<", "<<kd<<": "<<ykd<<endl;
           sysV[sysName] = make_pair(yku, ykd);

@@ -100,7 +100,7 @@ for id in 343981; do
     echo ======= ${id}_${cat} =======
     echo ""
     ifcsv_theo="TheorySys/mag_theory_${id}_SM_${cat}.csv";
-    ifcsv_exp="${basepath}/csv/mag_yield_${id}_SM_${cat}.csv";
+    ifcsv_exp="csv/mag_yield_${id}_SM_${cat}.csv";
     ifcsv_exp_jd="${basepath}/csv_jd/mag_yield_${id}_SM_${cat}.csv";
     ifcsv_tmp="csv/tmp_${id}_SM_${cat}.csv"
     > $ifcsv_tmp
