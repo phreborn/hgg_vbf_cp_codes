@@ -29,10 +29,12 @@ fillSys(){
   ofsys=$3
  
   resp_Prod="<Item Name=\"prod::resp_${para}("
+  resp_Prod_RW="<Item Name=\"prod::resp_${para}_RW("
   
   if [ "${para}" == "SCALE" ];then
     echo "<Systematic Name=\"ATLAS_HIGGS_MASS\" Constr=\"gaus\" CentralValue=\"1\" Mag=\"0.0019\" WhereTo=\"shape\"/>" >> $ofsys
     resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
+    resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_HIGGS_MASS,"
   fi
 
   lines=`cat $inf_para`
@@ -50,6 +52,7 @@ fillSys(){
     fi
 
     resp_Prod=${resp_Prod}"response::ATLAS_${sys_name},"
+    resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_${sys_name},"
  
     mag_u=$(echo $line | cut -d ',' -f 2)
     mag_d=$(echo $line | cut -d ',' -f 3)
@@ -99,6 +102,9 @@ fillSys(){
 
   resp_Prod=${resp_Prod}")\"/>"
   echo ${resp_Prod} >> $ofsys
+
+  resp_Prod_RW=${resp_Prod_RW}")\"/>"
+  echo ${resp_Prod_RW} >> $ofsys
 }
 
 basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
