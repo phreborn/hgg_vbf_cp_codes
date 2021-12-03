@@ -17,4 +17,4 @@ for init in ${sequence[@]};do
   done
 done
 
-cp ${basedir}/csv/Collect_1_3/jd_N_yield.csv csv/
+cp ${basedir}/csv/Collect_1_3/jd_N_yield.csv ${basedir}/csv/

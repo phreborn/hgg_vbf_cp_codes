@@ -121,7 +121,7 @@ void muVar(){
           cout<<sys[i]<<": "<<vu[i]<<", "<<vd[i]<<endl;
           j++;
         }
-        axis->SetLabelSize(0.03);
+        axis->SetLabelSize(0.025);
         axis->LabelsOption("v");
         //axis->LabelsOption("u");
 

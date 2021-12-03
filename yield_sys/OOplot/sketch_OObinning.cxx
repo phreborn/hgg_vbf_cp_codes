@@ -154,12 +154,12 @@ void sketch_OObinning(){
     //}
 
     std::map<int, TString> bins;
-    bins[1] = "-20:-p2";
+    bins[1] = "-#infty:-p2";
     bins[2] = "-p2:-p1";
     bins[3] = "-p1:0";
     bins[4] = "0:p1";
     bins[5] = "p1:p2";
-    bins[6] = "p2:20";
+    bins[6] = "p2:#infty";
 
     for(auto b : bins){
       TString bname = b.second;

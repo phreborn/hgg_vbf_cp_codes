@@ -1,6 +1,6 @@
 #! /bin/bash
 
-inpath=/scratchfs/atlas/chenhr/atlaswork/VBF_CP/syst/yield_sys/TheorySys/showerSys
+inpath=/scratchfs/atlas/huirun/atlaswork/VBF_CP/syst/yield_sys/TheorySys/Shower_updatedBDT
 
 transfer(){
   inf=$1
@@ -31,12 +31,18 @@ transfer(){
     b5=$(echo $l | cut -d , -f 6)
     b6=$(echo $l | cut -d , -f 7)
 
-    echo "${sysname}_${sampleName},${b1}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
-    echo "${sysname}_${sampleName},${b2}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
-    echo "${sysname}_${sampleName},${b3}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
-    echo "${sysname}_${sampleName},${b4}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
-    echo "${sysname}_${sampleName},${b5}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
-    echo "${sysname}_${sampleName},${b6}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
+    #echo "${sysname}_${sampleName},${b1}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
+    #echo "${sysname}_${sampleName},${b2}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
+    #echo "${sysname}_${sampleName},${b3}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
+    #echo "${sysname}_${sampleName},${b4}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
+    #echo "${sysname}_${sampleName},${b5}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
+    #echo "${sysname}_${sampleName},${b6}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
+    echo "shower_${sampleName},${b1}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
+    echo "shower_${sampleName},${b2}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
+    echo "shower_${sampleName},${b3}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
+    echo "shower_${sampleName},${b4}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
+    echo "shower_${sampleName},${b5}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
+    echo "shower_${sampleName},${b6}" >> mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
   done
 }
 

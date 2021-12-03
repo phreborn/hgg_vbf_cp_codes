@@ -13,7 +13,7 @@ echo $bin
 echo $cats
 
 rundir=".."
-ifpara="csv/para_Nom.csv"
+ifpara="/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/para_Nom.csv"
 
 for d in $d_tilde;do
 #for d in m00;do
