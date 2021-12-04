@@ -104,7 +104,7 @@ for cat in $cats;do
       echo "" >> $out_xml
     fi
 
-    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     #if [ $includeSys -eq 1 ];then
     #for sys in $sys_VBF_SM;do
     #  echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -116,14 +116,14 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     echo "    <NormFactor Name=\"yield_ggH_SM[${y_ggH}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"VBF_RW\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"VBF_RW\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSigRW\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
     for sys in $sys_VBF_RW;do
       echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -135,7 +135,7 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"ggH\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"ggH\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSigRW\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
     for sys in $sys_ggH;do
       echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -148,7 +148,7 @@ for cat in $cats;do
     echo "" >> $out_xml
 
     if [ $includeSys -eq 1 -a ${SSAvailable} -eq 1 ];then
-    echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSigRW\">" >> $out_xml
     echo "    <Systematic Name=\"ATLAS_Hgg_BIAS_:category:\" Constr=\"gaus\" CentralValue=\"0\" Mag=\"${spurious}\" WhereTo=\"yield\"/>" >> $out_xml
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
