@@ -25,12 +25,12 @@ transfer(){
   b5=$(cat ${inpath}/$inf | grep LT_b5 | sed 's/ //g' | cut -d , -f 2)
   b6=$(cat ${inpath}/$inf | grep LT_b6 | sed 's/ //g' | cut -d , -f 2)
 
-  echo "rest_Higgs_uncer_${sampleName},${b1}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
-  echo "rest_Higgs_uncer_${sampleName},${b2}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
-  echo "rest_Higgs_uncer_${sampleName},${b3}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
-  echo "rest_Higgs_uncer_${sampleName},${b4}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
-  echo "rest_Higgs_uncer_${sampleName},${b5}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
-  echo "rest_Higgs_uncer_${sampleName},${b6}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
+  echo "rest_Higgs_uncer_${sampleName},${b1},${b1}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
+  echo "rest_Higgs_uncer_${sampleName},${b2},${b2}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
+  echo "rest_Higgs_uncer_${sampleName},${b3},${b3}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
+  echo "rest_Higgs_uncer_${sampleName},${b4},${b4}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
+  echo "rest_Higgs_uncer_${sampleName},${b5},${b5}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
+  echo "rest_Higgs_uncer_${sampleName},${b6},${b6}" >> ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
 }
 
 ds=$(ls ${inpath}/mag_yield_346214_*_TT_b1.csv | cut -d _ -f 4)
