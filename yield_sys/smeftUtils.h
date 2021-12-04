@@ -91,13 +91,13 @@ string getTok(string line, int ibin, string stok = ","){
 }
 
 float getVariKF(string sys = "JET_JER_DataVsMC_MC16", string cat = "LL", string cHW = "-0.5", int bin = 5, string ud = "Up"){
-  string path = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine/"+cat+"_"+sys+"_cHW_"+cHW+".txt";
+  string path = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine_updatedBDT/"+cat+"_"+sys+"_cHW_"+cHW+".txt";
 
   fstream inFile;
   inFile.open(path);
   if( ! inFile.is_open())
   {
-    cout<<"SMEFT/kfactor_SMEFT/"+cat+"_"+sys+"_cHW_"+cHW+".txt"<<endl;
+    cout<<path<<endl;
     cout<<"can not open cfg file! returning 0"<<endl;
     return 0.;
   }

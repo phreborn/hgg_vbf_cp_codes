@@ -69,7 +69,7 @@ void readInYds(TString inFileName, map<TString, float> &varMaps)
 void kfactor(){
 
   map<TString, TString> cHWs;
-  cHWs["m0d00"] = "-1.56e-07";
+  cHWs["m0d00"] = "-0";
   cHWs["m0d05"] = "-0.05";
   cHWs["m0d10"] = "-0.1";
   cHWs["m0d15"] = "-0.15";
@@ -134,7 +134,7 @@ void kfactor(){
   readInYds("../csv/N_yield.csv", Yds);
 
   map<TString, vector<float>> Syss;
-  readInYVs("../csv/mag_yield_346214_m00_LL_b1.csv", Syss);
+  readInYVs("../csv/mag_yield_346214_m00_TT_b1.csv", Syss);
 
   ofstream ofyield("csv/N_yield.csv", ios::ate);
   if(!ofyield){
@@ -158,7 +158,7 @@ void kfactor(){
 
         map<TString, vector<float>> nomKFs;
         //cout<<"kfactor_SMEFT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt"<<endl;
-        readInKFs("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt", nomKFs);
+        readInKFs("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine_updatedBDT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt", nomKFs);
 
         float kf = nomKFs["Nominal"].at(binNum-1);
         float ycHW = ySM*kf; cout<<"kfactor at "<<binName<<": "<<kf<<endl;

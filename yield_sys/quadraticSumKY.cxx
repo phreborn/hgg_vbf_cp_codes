@@ -18,7 +18,7 @@ void writeXml(map<string, pair<float, float>> sysV, string file){
 
 void quadraticSumKY(){
   map<TString, TString> cHWs;
-  cHWs["m0d00"] = "-1.56e-07";
+  cHWs["m0d00"] = "-0";
   cHWs["m0d05"] = "-0.05";
   cHWs["m0d10"] = "-0.1";
   cHWs["m0d15"] = "-0.15";
