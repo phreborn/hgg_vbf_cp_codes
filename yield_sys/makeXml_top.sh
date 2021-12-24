@@ -52,6 +52,8 @@ for d in $d_tilde;do
   else
     echo "  <Asimov Name=\"asimovData_SB_SM\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
   fi
+  echo "  <Asimov Name=\"asimovData_SB_CPeven10\"  Setup=\"mu=1,mu_VBF_SM=1.1,mu_VBF_RW=0,mu_ggH=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
+  echo "  <Asimov Name=\"asimovData_SB_CPeven20\"  Setup=\"mu=1,mu_VBF_SM=1.2,mu_VBF_RW=0,mu_ggH=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
   echo "" >> $out_xml
 
   echo "</Combination>" >> $out_xml
