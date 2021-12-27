@@ -38,6 +38,12 @@ void quadraticSumKY(){
   cHWs["m0d85"] = "-0.85";
   cHWs["m0d90"] = "-0.9";
   cHWs["m0d95"] = "-0.95";
+  cHWs["m1d00"] = "-1";
+  cHWs["m1d10"] = "-1.1";
+  cHWs["m1d20"] = "-1.2";
+  cHWs["m1d30"] = "-1.3";
+  cHWs["m1d40"] = "-1.4";
+  cHWs["m1d50"] = "-1.5";
   cHWs["p0d05"] = "0.05";
   cHWs["p0d10"] = "0.1";
   cHWs["p0d15"] = "0.15";
@@ -58,6 +64,11 @@ void quadraticSumKY(){
   cHWs["p0d90"] = "0.9";
   cHWs["p0d95"] = "0.95";
   cHWs["p1d00"] = "1";
+  cHWs["p1d10"] = "1.1";
+  cHWs["p1d20"] = "1.2";
+  cHWs["p1d30"] = "1.3";
+  cHWs["p1d40"] = "1.4";
+  cHWs["p1d50"] = "1.5";
 
   /*cHWs["m2d5"] = "-2.5";
   cHWs["m2d0"] = "-2";

@@ -66,7 +66,7 @@ void readInYds(TString inFileName, map<TString, float> &varMaps)
   }
 }
 
-void kfactor(){
+void quad_kfactor(){
 
   map<TString, TString> cHWs;
   cHWs["m0d00"] = "-0";
@@ -147,7 +147,7 @@ void kfactor(){
   map<TString, vector<float>> Syss;
   readInYVs("../csv/mag_yield_346214_m00_TT_b1.csv", Syss);
 
-  ofstream ofyield("csv/N_yield.csv", ios::ate);
+  ofstream ofyield("csv/N_yield_quad.csv", ios::ate);
   if(!ofyield){
     ofyield.close();
     cout<<"error can't open file for record"<<endl;
@@ -171,8 +171,13 @@ void kfactor(){
         //cout<<"kfactor_SMEFT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt"<<endl;
         readInKFs("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine_updatedBDT/"+catName+"_EG_RESOLUTION_ALL_cHW_"+cHWNum+".txt", nomKFs);
 
+        map<TString, vector<float>> nomQuadCorrections;
+        readInKFs("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_correction/cHWt_"+cHWNum+".txt", nomQuadCorrections);
+        float qc = 1;
+        if(cHWNum!="-0"){ qc = nomQuadCorrections["correction"].at(binNum-1); }
+
         float kf = nomKFs["Nominal"].at(binNum-1);
-        float ycHW = ySM*kf; cout<<"kfactor at "<<binName<<": "<<kf<<endl;
+        float ycHW = ySM*kf*qc; cout<<"kfactor, correction at "<<binName<<": "<<kf<<", "<<qc<<endl;
         ofyield<<"VBF_"+cHWName+"_"+catName+"_"+binName<<","<<ycHW<<endl;
 
         //for(auto sys : Syss){

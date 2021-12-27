@@ -2,6 +2,7 @@
 
 #cHWs=$(cat ../cHW_fine | grep -v "#")
 cHWs=$(ls /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine/LL_PH_EFF_ISO_Uncertainty_cHW_*txt | cut -d _ -f 9 | sed 's/\.txt//g')
+cHWs=$(ls /publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/kfactor_SMEFT_fine_updatedBDT/LL_PH_EFF_ISO_Uncertainty_cHW_*txt | cut -d _ -f 10 | sed 's/\.txt//g')
 
 fcHW="../cHW_fine"
 > ${fcHW}
