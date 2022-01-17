@@ -17,48 +17,48 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
   map<TString, string> catCuts;
   getCatCuts(cf_cats, catCuts); for(auto c : catCuts) cout<<c.first<<c.second<<endl;
 
-  map<TString, double> d_map;
-  d_map["m00"] = 0.;
-  d_map["m01"] = -0.01;
-  d_map["m02"] = -0.02;
-  d_map["m03"] = -0.03;
-  d_map["m04"] = -0.04;
-  d_map["m05"] = -0.05;
-  d_map["m06"] = -0.06;
-  d_map["m07"] = -0.07;
-  d_map["m08"] = -0.08;
-  d_map["m10"] = -0.10;
-  d_map["m12"] = -0.12;
-  d_map["m14"] = -0.14;
-  d_map["m16"] = -0.16;
-  d_map["m18"] = -0.18;
-  d_map["m20"] = -0.20;
-  d_map["p01"] = 0.01;
-  d_map["p02"] = 0.02;
-  d_map["p03"] = 0.03;
-  d_map["p04"] = 0.04;
-  d_map["p05"] = 0.05;
-  d_map["p06"] = 0.06;
-  d_map["p07"] = 0.07;
-  d_map["p08"] = 0.08;
-  d_map["p10"] = 0.10;
-  d_map["p12"] = 0.12;
-  d_map["p14"] = 0.14;
-  d_map["p16"] = 0.16;
-  d_map["p18"] = 0.18;
-  d_map["p20"] = 0.20;
+  vector<TString> d_map;
+  d_map.push_back("m20");
+  d_map.push_back("m18");
+  d_map.push_back("m16");
+  d_map.push_back("m14");
+  d_map.push_back("m12");
+  d_map.push_back("m10");
+  d_map.push_back("m08");
+  d_map.push_back("m07");
+  d_map.push_back("m06");
+  d_map.push_back("m05");
+  d_map.push_back("m04");
+  d_map.push_back("m03");
+  d_map.push_back("m02");
+  d_map.push_back("m01");
+  d_map.push_back("m00");
+  d_map.push_back("p01");
+  d_map.push_back("p02");
+  d_map.push_back("p03");
+  d_map.push_back("p04");
+  d_map.push_back("p05");
+  d_map.push_back("p06");
+  d_map.push_back("p07");
+  d_map.push_back("p08");
+  d_map.push_back("p10");
+  d_map.push_back("p12");
+  d_map.push_back("p14");
+  d_map.push_back("p16");
+  d_map.push_back("p18");
+  d_map.push_back("p20");
 
   std::map<TString, TString> ids;
   ids["vbf"] = "346214";
 
-  std::map<TString, double> dtmp;
+  std::vector<TString> dtmp;
 
 
   for(auto i : ids){
     TString sample = i.first; cout<<sample<<endl;
     TString id = i.second;
     if(sample=="vbf") dtmp = d_map;
-    else dtmp = {{"SM", 0.0}};
+    else dtmp = {"SM"};
 
     for(auto c : catCuts){
       TString cat = c.first;
@@ -69,7 +69,7 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
       TAxis *axis = hu->GetXaxis();
       int i = 0;
       for(auto d : dtmp){
-        TString dName = d.first;
+        TString dName = d;
 
 //        std::vector<TString> sys;
 //        std::vector<float> vu;
