@@ -3,6 +3,9 @@
 includeSys=1
 SSAvailable=1
 
+CPevenAsi=0
+valueCPeven=m1d00
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
@@ -101,6 +104,24 @@ for cat in $cats;do
       echo "  <Item Name=\"prod::resp_RES(Une,Un)\"/>" >> $out_xml
       echo "" >> $out_xml
       echo "  <Item Name=\"prod::resp_SCALE(Un,Une)\"/>" >> $out_xml
+      echo "" >> $out_xml
+    fi
+
+    if [ ${CPevenAsi} -eq 1 ];then
+      y_VBF_CPeven=$(cat yield_sys/SMEFT/csv/N_yield_CPeven.csv | grep ${valueCPeven}_${cat} | cut -d , -f 2)
+
+      echo "  <Sample Name=\"VBF_CPeven\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "    <NormFactor Name=\"yield_VBF_CPeven[${y_VBF_CPeven}]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+      echo "    <NormFactor Name=\"mu_VBF_CPeven[1]\" />" >> $out_xml
+      echo "  </Sample>" >> $out_xml
+      echo "" >> $out_xml
+
+      echo "  <Sample Name=\"ggH_CPeven\" InputFile=\"config/vbf_cp_${smp}/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "    <NormFactor Name=\"yield_ggH_CPeven[${y_ggH}]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+      echo "    <NormFactor Name=\"mu_ggH_CPeven[1]\" />" >> $out_xml # can be used for turn on/off a process
+      echo "  </Sample>" >> $out_xml
       echo "" >> $out_xml
     fi
 
