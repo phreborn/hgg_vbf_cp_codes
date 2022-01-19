@@ -6,6 +6,8 @@ SSAvailable=1
 injectTest=0
 injectPoint=m03
 
+bkgFuncBias_Asi=1
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
@@ -164,9 +166,17 @@ for cat in $cats;do
     echo "" >> $out_xml
     fi
 
+    if [ ${bkgFuncBias_Asi} -eq 1 ];then
+      echo "  <Sample Name=\"background_funcBias_Asi\" InputFile=\"config/vbf_cp_${d}/model/background_:category:_funcBias_Asi.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\">" >> $out_xml
+      echo "    <NormFactor Name=\"nbkg_:category:_bfb[${N_bkg},0,100000]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu_bkg_funcBias_Asi[1]\"/>" >> $out_xml
+      echo "  </Sample>" >> $out_xml
+    fi
+
     echo "  <Sample Name=\"background\" InputFile=\"config/vbf_cp_${d}/model/background_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\">" >> $out_xml
     echo "    <NormFactor Name=\"nbkg_:category:[${N_bkg},0,100000]\"/>" >> $out_xml
     #echo "    <NormFactor Name=\"nbkg_:category:[${N_bkg}]\"/>" >> $out_xml
+    echo "    <NormFactor Name=\"mu_bkg[1]\"/>" >> $out_xml
     echo "  </Sample>" >> $out_xml
     echo "</Channel>" >> $out_xml
   done
