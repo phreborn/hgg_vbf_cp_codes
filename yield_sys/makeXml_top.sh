@@ -1,6 +1,6 @@
 #! /bin/bash
 
-bkgFuncBias_Asi=1
+bkgFuncBias_Asi=0
 
 injectTest=0
 injectPoint=m03
