@@ -1,5 +1,6 @@
 #! /bin/bash
 
+bkgFuncBias_Toy=0
 bkgFuncBias_Asi=0
 
 injectTest=0
@@ -50,6 +51,8 @@ for d in $d_tilde;do
 
   if [ $bkgFuncBias_Asi -eq 1 ];then
     echo "  <Asimov Name=\"asimovData_B_blind\"   Setup=\"mu=0,mu_bkg=0,mu_bkg_funcBias_Asi=1\"     Action=\"fixsyst:fit:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_B_blindFit\" SnapshotGlob=\"nominalGlob_B_blindFit\"/>" >> $out_xml
+  elif [ $bkgFuncBias_Toy -eq 1 ];then
+    echo "do nothing"
   else
     #echo "  <Asimov Name=\"asimovData_SM_noFit\"   Setup=\"mu_VBF_RW=0,mu_VBF_SM=1,mu=1\"     Action=\"raw:fixall:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_SM_noFit\" SnapshotGlob=\"nominalGlob_SM_noFit\"/>" >> $out_xml # PE b, c
     echo "  <Asimov Name=\"asimovData_B_blind\"   Setup=\"mu=0\"     Action=\"fixsyst:fit:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_B_blindFit\" SnapshotGlob=\"nominalGlob_B_blindFit\"/>" >> $out_xml
@@ -58,6 +61,8 @@ for d in $d_tilde;do
   if [ $injectTest -eq 1 ];then
     echo "  <Asimov Name=\"asimovData_SB_SM\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0,mu_VBF_${injectPoint}=0,mu_ggH_${injectPoint}=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
     echo "  <Asimov Name=\"asimovData_SB_${injectPoint}\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0,mu_VBF_SM=0,mu_ggH_SM=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
+  elif [ $bkgFuncBias_Toy -eq 1 ];then
+    echo "do nothing"
   elif [ $bkgFuncBias_Asi -eq 1 ];then
 #    echo "  <Asimov Name=\"asimovData_SB_SM\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0,mu_bkg=1,mu_bkg_funcBias_Asi=0\"     Action=\"genasimov:reset\"/>" >> $out_xml
     echo "  <Asimov Name=\"asimovData_SB_bkgFuncBias\"  Setup=\"mu=1,mu_VBF_RW=0,mu_ggH=0,mu_bkg=0,mu_bkg_funcBias_Asi=1\"     Action=\"genasimov:reset\"/>" >> $out_xml

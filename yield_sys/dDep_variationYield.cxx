@@ -64,45 +64,14 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
       TString cat = c.first;
 
       int dnum = d_map.size();
-      TH1F *hu = new TH1F("var_up", "", dnum, 0, dnum);
-      TH1F *hd = new TH1F("var_down", "", dnum, 0, dnum);
+//      TH1F *hu = new TH1F("var_up", "", dnum, 0, dnum);
+//      TH1F *hd = new TH1F("var_down", "", dnum, 0, dnum);
+      TH1F *hu = new TH1F("var_up", "", dnum, -0.2, 0.2);
+      TH1F *hd = new TH1F("var_down", "", dnum, -0.2, 0.2);
       TAxis *axis = hu->GetXaxis();
       int i = 0;
       for(auto d : dtmp){
         TString dName = d;
-
-//        std::vector<TString> sys;
-//        std::vector<float> vu;
-//        std::vector<float> vd;
-//      
-//        ifstream file;
-//        string filepath = Form("csv/mag_yield_%s_%s_%s.csv", id.Data(), dName.Data(), cat.Data());
-//        file.open(filepath);
-//        if( ! file.is_open())
-//        {
-//            cout<<"can not open file! "<<filepath<<endl;
-//            return;
-//        }
-//        char tmp[1000];
-//        while(!file.eof()){
-//          file.getline(tmp,1000);
-//          string line(tmp);
-//          size_t ptmp;
-//      
-//          size_t pos = line.find(','); std::cout<<line.substr(0,pos)<<std::endl;
-//          if(pos!=string::npos && line != "") sys.push_back(line.substr(0,pos).data());
-//          else continue;
-//      
-//          ptmp = pos;
-//          pos = line.find(',', pos+1); cout<<line.substr(ptmp+1, pos-ptmp-1)<<endl;;
-//          if(pos!=string::npos && line != "") vu.push_back(atof(line.substr(ptmp+1, pos-ptmp-1).data()));
-//          else vu.push_back(0.);
-//      
-//          ptmp = pos;
-//          pos = line.find(',', pos+1); cout<<line.substr(ptmp+1, pos-ptmp-1)<<endl;;
-//          if(line != "") vd.push_back(atof(line.substr(ptmp+1, pos-ptmp-1).data()));
-//          else vd.push_back(0.);
-//        }
 
         TString fpath = "csv/mag_yield_"+id+"_"+dName+"_"+cat+".csv";
         std::map<TString, std::pair<float,float>> sysud;
@@ -117,9 +86,11 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
         for(auto sys : sysud){
           TString sysname = sys.first;
           if(sysname!=systodraw) continue;
-          axis->SetBinLabel(i+1, dName);
-          hu->Fill(i, sysname.Contains("JER_") ? jdsysud[sysname].first : sysud[sysname].first);
-          hd->Fill(i, sysname.Contains("JER_") ? jdsysud[sysname].second : sysud[sysname].second);
+//          axis->SetBinLabel(i+1, dName);
+//          hu->Fill(i, sysname.Contains("JER_") ? jdsysud[sysname].first : sysud[sysname].first);
+//          hd->Fill(i, sysname.Contains("JER_") ? jdsysud[sysname].second : sysud[sysname].second);
+          hu->SetBinContent(i+1, sysname.Contains("JER_") ? jdsysud[sysname].first : sysud[sysname].first);
+          hd->SetBinContent(i+1, sysname.Contains("JER_") ? jdsysud[sysname].second : sysud[sysname].second);
           cout<<sysname<<": "<<sysud[sysname].first<<", "<<sysud[sysname].second<<endl;
           i++;
         }// end sys
@@ -137,6 +108,7 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
       lg->AddEntry(hu, "up", "l");
       lg->AddEntry(hd, "down", "l");
       
+      hu->GetXaxis()->SetTitle("#tilde{d}");
       hu->GetYaxis()->SetTitle("(var.-nom.)/nom.");
       
       hu->SetLineColor(kRed);
@@ -147,7 +119,7 @@ void dDep_variationYield(TString systodraw = "JET_Flavor_Composition"){
       hd->Draw("same hist");
       lg->Draw("same");
 
-      myText(0.22, 0.88, 1, (sample+",  "+cat+",  yield").Data());
+      myText(0.22, 0.88, 1, (sample+",  "+cat+",  yield, "+systodraw).Data());
 
       canv->SaveAs("plotFit/dDep_yieldVari_"+sample+"_"+systodraw+"_"+cat+".png");
       canv->SaveAs("plotFit/dDep_yieldVari_"+sample+"_"+systodraw+"_"+cat+".pdf");

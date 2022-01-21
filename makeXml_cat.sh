@@ -6,6 +6,8 @@ SSAvailable=1
 injectTest=0
 injectPoint=m03
 
+tnum=0
+bkgFuncBias_Toy=0
 bkgFuncBias_Asi=0
 
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
@@ -72,7 +74,21 @@ for cat in $cats;do
     echo "<!DOCTYPE Channel SYSTEM 'AnaWSBuilder.dtd'>" >> $out_xml
     echo "<Channel Name=\"OO_${cat}\" Type=\"shape\" Lumi=\"1\">" >> $out_xml
     #echo "  <Data InputFile=\"Input/data/vbf_cp_${d}/tree_data_OO_${b}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
-    echo "  <Data InputFile=\"Input/data/tree_data_OO_${cat}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
+    if [ $bkgFuncBias_Toy -eq 1 ];then
+      tfix=
+      hname=
+      if [[ ${cat} =~ LT ]];then
+        bfunc=$(cat shape_sys/bkg_SS.csv | grep ${cat} | cut -d , -f 2)
+        tfix=Asimov_${bfunc}
+        hname=Asi_${cat}
+      else
+        tfix=toys
+        hname=toy_${cat}_${tnum}
+      fi
+      echo "  <Data InputFile=\"Input_toys/tree_bfBias_${tfix}.root\" FileType=\"histogram\" HistName=\"${hname}\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\"/>" >> $out_xml
+    else
+      echo "  <Data InputFile=\"Input/data/tree_data_OO_${cat}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
+    fi
     echo "" >> $out_xml
 
     if [ $includeSys -eq 1 ];then
@@ -95,8 +111,10 @@ for cat in $cats;do
     echo "" >> $out_xml
     else
       echo "  <Item Name=\"prod::resp_RES(one[1],)\"/>" >> $out_xml
+      echo "  <Item Name=\"prod::resp_RES_RW(one,)\"/>" >> $out_xml
       echo "" >> $out_xml
       echo "  <Item Name=\"prod::resp_SCALE(one,)\"/>" >> $out_xml
+      echo "  <Item Name=\"prod::resp_SCALE_RW(one,)\"/>" >> $out_xml
       echo "" >> $out_xml
     fi
 
