@@ -53,6 +53,7 @@ for d in $d_tilde;do
     echo "  <Asimov Name=\"asimovData_B_blind\"   Setup=\"mu=0,mu_bkg=0,mu_bkg_funcBias_Asi=1\"     Action=\"fixsyst:fit:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_B_blindFit\" SnapshotGlob=\"nominalGlob_B_blindFit\"/>" >> $out_xml
   elif [ $bkgFuncBias_Toy -eq 1 ];then
     echo "do nothing"
+#    echo "  <Asimov Name=\"toyFit\"   Setup=\"mu=1,mu_VBF_RW=1_0_5,mu_ggH=1,mu_VBF_SM=0,mu_ggH_SM=0\"     Action=\"fixsyst:fit:float:savesnapshot\" SnapshotNuis=\"nominalNuis_toyFit\" SnapshotGlob=\"nominalGlob_toyFit\"/>" >> $out_xml
   else
     #echo "  <Asimov Name=\"asimovData_SM_noFit\"   Setup=\"mu_VBF_RW=0,mu_VBF_SM=1,mu=1\"     Action=\"raw:fixall:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_SM_noFit\" SnapshotGlob=\"nominalGlob_SM_noFit\"/>" >> $out_xml # PE b, c
     echo "  <Asimov Name=\"asimovData_B_blind\"   Setup=\"mu=0\"     Action=\"fixsyst:fit:genasimov:float:savesnapshot\" SnapshotNuis=\"nominalNuis_B_blindFit\" SnapshotGlob=\"nominalGlob_B_blindFit\"/>" >> $out_xml
