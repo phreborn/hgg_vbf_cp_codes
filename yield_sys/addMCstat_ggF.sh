@@ -11,12 +11,12 @@ transfer(){
 
   sampleName=ggF
 
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
-  sed -i '/mcstat_ggF_/d' ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b3.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b4.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b5.csv
+  sed -i "/mcstat_${sampleName}/d" ${outpath}/mag_yield_${sampleID}_${d_tilde}_${bdtCat}_b6.csv
 
   b1=$(cat ${inpath}/$inf | grep ${bdtCat}_b1 | sed 's/ //g' | cut -d , -f 2)
   b2=$(cat ${inpath}/$inf | grep ${bdtCat}_b2 | sed 's/ //g' | cut -d , -f 2)
