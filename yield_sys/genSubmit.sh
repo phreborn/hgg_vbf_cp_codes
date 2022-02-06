@@ -1,5 +1,7 @@
 tag=ggF
 
+basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/
+
 allJobs=jobsSub.sh
 > ${allJobs}
 
@@ -23,7 +25,7 @@ for init in ${sequence[@]};do
   #echo "export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase" >> exe_${jobName}.sh
   #echo "source \${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh" >> exe_${jobName}.sh
   #echo "lsetup \"root 6.20.06-x86_64-centos7-gcc8-opt\"" >> exe_${jobName}.sh
-  echo "rm -r csv/${jobName}" >> exe_${jobName}.sh
+  echo "rm -r ${basedir}/csv/${jobName}" >> exe_${jobName}.sh
   for id in 346214 343981;do
     echo "./getMag_w1.exe ${id} ${init} ${fin} ${sysSet}" >> exe_${jobName}.sh
     echo "sleep 2" >> exe_${jobName}.sh

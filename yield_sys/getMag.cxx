@@ -244,15 +244,17 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, TString sysSet = "p
   
       //if((int)calc_sysList.size()>0) break;
     }// end syst
-  
-    TString dirName = "csv/"+TString(Form("Collect_%s_%i_%i", sysSet.Data(), iSysInit, iSysFin));
+
+    TString basepath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/";
+
+    TString dirName = basepath+"csv/"+TString(Form("Collect_%s_%i_%i", sysSet.Data(), iSysInit, iSysFin));
     TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
     system(tsCommand.Data());
  
     // fill csv file
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        ofstream ofsyst(Form("csv/Collect_%s_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
+        ofstream ofsyst(Form(basepath+"csv/Collect_%s_%i_%i/mag_yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
         if(!ofsyst){
           ofsyst.close();
           cout<<"error can't open file for record"<<endl;
@@ -271,7 +273,7 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, TString sysSet = "p
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
         std::vector<TString> dToSave = {"m02", "m00", "p02", "SM"};
         if(std::find(dToSave.begin(), dToSave.end(), d->first) == dToSave.end()) continue;
-        ofstream yofsyst(Form("csv/Collect_%s_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
+        ofstream yofsyst(Form(basepath+"csv/Collect_%s_%i_%i/yield_%i_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin, mcID), ios::out);
         if(!yofsyst){
           yofsyst.close();
           cout<<"error can't open file for yield"<<endl;
@@ -299,9 +301,9 @@ void getMag(int sampleID, int iSysInit = 1, int iSysFin = 1, TString sysSet = "p
     }
 
     // fill nominal yields
-    ofstream ofyield_clear(Form("csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
+    ofstream ofyield_clear(Form(basepath+"csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
     ofyield_clear.close();
-    ofstream ofyield(Form("csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
+    ofstream ofyield(Form(basepath+"csv/Collect_%s_%i_%i/N_yield.csv", sysSet.Data(), iSysInit, iSysFin), ios::app);
     if(!ofyield){
       ofyield.close();
       cout<<"error can't open file for record"<<endl;

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["aS"]="logn" ["shower"]="gaus")
+declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["aS"]="logn" ["shower"]="gaus" ["rest_Higgs"]="gaus" ["mcstat"]="logn")
 echo ${!mapCtrType[*]}
 
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
@@ -49,13 +49,17 @@ do
 
   #echo "${sys_name}, ${ConstrType}"
 
-  if [ $wNum -eq 3 ];then
-    if [ -n $ConstrType -a $ConstrType != "asym" ];then
-      echo "UNMATCH constraint type and mag number, ${sys_name}"
-      echo "origin type ${ConstrType}, force asym"
-      ConstrType="asym"
+  if [ -n $ConstrType -a $wNum -eq 3 ];then
+    if [ $ConstrType != "asym" -a ${mag_u} == ${mag_d} ];then
+      echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u}\" WhereTo=\"yield\"/>" >> $ofsys
+    else
+      # this means EG and PH sys are still asym for yield variation as compared to shape variation case.
+      if [ $ConstrType != "asym" -a ${mag_u} != ${mag_d} ];then
+        echo "$ConstrType type constr with up and dn: ${mag_u}, ${mag_d} => force asym. ${sys_name}"
+        ConstrType="asym"
+      fi
+      echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u},${mag_d}\" WhereTo=\"yield\"/>" >> $ofsys
     fi
-    echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u},${mag_d}\" WhereTo=\"yield\"/>" >> $ofsys
   elif [ $wNum -eq 2 -a -n $ConstrType -a $ConstrType != "asym" ]; then
     echo "<Systematic Name=\"ATLAS_${sys_name}\" Constr=\"${ConstrType}\" CentralValue=\"1\" Mag=\"${mag_u}\" WhereTo=\"yield\"/>" >> $ofsys
   else

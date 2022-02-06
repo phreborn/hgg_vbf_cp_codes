@@ -6,6 +6,10 @@ SSAvailable=1
 injectTest=0
 injectPoint=m03
 
+tnum=0
+bkgFuncBias_Toy=0
+bkgFuncBias_Asi=0
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
@@ -70,7 +74,21 @@ for cat in $cats;do
     echo "<!DOCTYPE Channel SYSTEM 'AnaWSBuilder.dtd'>" >> $out_xml
     echo "<Channel Name=\"OO_${cat}\" Type=\"shape\" Lumi=\"1\">" >> $out_xml
     #echo "  <Data InputFile=\"Input/data/vbf_cp_${d}/tree_data_OO_${b}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
-    echo "  <Data InputFile=\"Input/data/tree_data_OO_${cat}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
+    if [ $bkgFuncBias_Toy -eq 1 ];then
+      tfix=
+      hname=
+      if [[ ${cat} =~ LT ]];then
+        bfunc=$(cat shape_sys/bkg_SS.csv | grep ${cat} | cut -d , -f 2)
+        tfix=Asimov_${bfunc}
+        hname=Asi_${cat}
+      else
+        tfix=toys
+        hname=toy_${cat}_${tnum}
+      fi
+      echo "  <Data InputFile=\"Input_toys/tree_bfBias_${tfix}.root\" FileType=\"histogram\" HistName=\"${hname}\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\"/>" >> $out_xml
+    else
+      echo "  <Data InputFile=\"Input/data/tree_data_OO_${cat}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
+    fi
     echo "" >> $out_xml
 
     if [ $includeSys -eq 1 ];then
@@ -93,12 +111,14 @@ for cat in $cats;do
     echo "" >> $out_xml
     else
       echo "  <Item Name=\"prod::resp_RES(one[1],)\"/>" >> $out_xml
+      echo "  <Item Name=\"prod::resp_RES_RW(one,)\"/>" >> $out_xml
       echo "" >> $out_xml
       echo "  <Item Name=\"prod::resp_SCALE(one,)\"/>" >> $out_xml
+      echo "  <Item Name=\"prod::resp_SCALE_RW(one,)\"/>" >> $out_xml
       echo "" >> $out_xml
     fi
 
-    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     #if [ $includeSys -eq 1 ];then
     #for sys in $sys_VBF_SM;do
     #  echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -110,7 +130,7 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     echo "    <NormFactor Name=\"yield_ggH_SM[${y_ggH}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
@@ -133,7 +153,7 @@ for cat in $cats;do
       echo "" >> $out_xml
     fi
 
-    echo "  <Sample Name=\"VBF_RW\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"VBF_RW\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSigRW\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
     for sys in $sys_VBF_RW;do
       echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -145,7 +165,7 @@ for cat in $cats;do
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
 
-    echo "  <Sample Name=\"ggH\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"ggH\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSigRW\">" >> $out_xml
     if [ $includeSys -eq 1 ];then
     for sys in $sys_ggH;do
       echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
@@ -158,15 +178,23 @@ for cat in $cats;do
     echo "" >> $out_xml
 
     if [ $includeSys -eq 1 -a ${SSAvailable} -eq 1 ];then
-    echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSigRW\">" >> $out_xml
     echo "    <Systematic Name=\"ATLAS_Hgg_BIAS_:category:\" Constr=\"gaus\" CentralValue=\"0\" Mag=\"${spurious}\" WhereTo=\"yield\"/>" >> $out_xml
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
     fi
 
+    if [ ${bkgFuncBias_Asi} -eq 1 ];then
+      echo "  <Sample Name=\"background_funcBias_Asi\" InputFile=\"config/vbf_cp_${d}/model/background_:category:_funcBias_Asi.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\">" >> $out_xml
+      echo "    <NormFactor Name=\"nbkg_:category:_bfb[${N_bkg},0,100000]\"/>" >> $out_xml
+      echo "    <NormFactor Name=\"mu_bkg_funcBias_Asi[1]\"/>" >> $out_xml
+      echo "  </Sample>" >> $out_xml
+    fi
+
     echo "  <Sample Name=\"background\" InputFile=\"config/vbf_cp_${d}/model/background_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\">" >> $out_xml
     echo "    <NormFactor Name=\"nbkg_:category:[${N_bkg},0,100000]\"/>" >> $out_xml
     #echo "    <NormFactor Name=\"nbkg_:category:[${N_bkg}]\"/>" >> $out_xml
+    echo "    <NormFactor Name=\"mu_bkg[1]\"/>" >> $out_xml
     echo "  </Sample>" >> $out_xml
     echo "</Channel>" >> $out_xml
   done

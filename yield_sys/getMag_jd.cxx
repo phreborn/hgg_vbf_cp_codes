@@ -243,15 +243,17 @@ void getMag_jd(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = tru
   
       //if((int)calc_sysList.size()>0) break;
     }// end syst
-  
-    TString dirName = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
+
+    TString basepath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/";
+
+    TString dirName = basepath+"csv/"+TString(Form("Collect_%i_%i", iSysInit, iSysFin));
     TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
     system(tsCommand.Data());
  
     // fill csv file
     for(auto cat : catCuts){
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
-        ofstream ofsyst(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream ofsyst(Form(basepath+"csv/Collect_%i_%i/jd_mag_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
         if(!ofsyst){
           ofsyst.close();
           cout<<"error can't open file for record"<<endl;
@@ -270,7 +272,7 @@ void getMag_jd(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = tru
       for(auto d = d_tmp.begin(); d != d_tmp.end(); d++){
         std::vector<TString> dToSave = {"m02", "m00", "p02", "SM"};
         if(std::find(dToSave.begin(), dToSave.end(), d->first) == dToSave.end()) continue;
-        ofstream yofsyst(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
+        ofstream yofsyst(Form(basepath+"csv/Collect_%i_%i/jd_yield_%i_"+d->first+"_"+cat.first+".csv", iSysInit, iSysFin, mcID), ios::out);
         if(!yofsyst){
           yofsyst.close();
           cout<<"error can't open file for yield"<<endl;
@@ -298,9 +300,9 @@ void getMag_jd(int sampleID, int iSysInit = 1, int iSysFin = 1, bool doSys = tru
     }
 
     // fill nominal yields
-    ofstream ofyield_clear(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield_clear(Form(basepath+"csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
     ofyield_clear.close();
-    ofstream ofyield(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
+    ofstream ofyield(Form(basepath+"csv/Collect_%i_%i/jd_N_yield.csv", iSysInit, iSysFin), ios::app);
     if(!ofyield){
       ofyield.close();
       cout<<"error can't open file for record"<<endl;

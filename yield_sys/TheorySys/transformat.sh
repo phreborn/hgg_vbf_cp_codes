@@ -1,6 +1,6 @@
 #! /bin/bash
 
-inpath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/TheorySys_updatedBDT
+inpath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/TheorySys_stxs
 
 #mv VBF_theorySys_d2.63e-08.txt VBF_theorySys_d0.00.txt
 #mv ggF_theorySys_d2.63e-08.txt ggF_theorySys_d0.00.txt
@@ -17,6 +17,7 @@ transfer(){
   sampleID=$2
   d_tilde=$3
   bdtCat=$4
+  proc=$5
 
   > ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
   > ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
@@ -31,6 +32,8 @@ transfer(){
   do
 
     sysname=$(echo $l | cut -d , -f 1)
+
+    if [[ ${sysname} =~ "qcd" ]];then sysname=${sysname}_${proc};fi
 
     b1=$(echo $l | cut -d , -f 2)
     b2=$(echo $l | cut -d , -f 3)
@@ -92,9 +95,11 @@ do
   echo $inf
   echo $d_tilde
 
+  proc=""
   sampleID=""
   for id in "${!mapID[@]}";do
     if [[ $inf =~ $id ]];then
+      proc=${id}
       sampleID=${mapID[$id]}
     fi
   done
@@ -108,7 +113,7 @@ do
 
   echo "${sampleID}_${d_tilde}_${bdtCat}"
 
-  transfer $inf $sampleID $d_tilde ${bdtCat}
+  transfer $inf $sampleID $d_tilde ${bdtCat} ${proc}
 
 done
 
