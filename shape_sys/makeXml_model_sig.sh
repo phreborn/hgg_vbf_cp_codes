@@ -1,11 +1,13 @@
 #! /bin/bash
 
+basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
-d_tilde=$(ls ../yield_sys/csv/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
+d_tilde=$(ls ${basepath}/csv_w1/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
-bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
+bin=$(ls ${basepath}/csv_w1/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
 echo $bin
@@ -13,7 +15,7 @@ echo $bin
 echo $cats
 
 rundir=".."
-ifpara="/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/para_Nom.csv"
+ifpara="/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv_w1/para_Nom.csv"
 
 for d in $d_tilde;do
 #for d in m00;do

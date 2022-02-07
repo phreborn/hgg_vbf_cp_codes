@@ -295,12 +295,12 @@ void getMag_w1(int iSysInit = 1, int iSysFin = 1, TString sysSet = "photonallsys
   }// end syst
 
 
-  TString dirName = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/"+TString(Form("Collect_%s_%i_%i", sysSet.Data(), iSysInit, iSysFin));
+  TString dirName = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv_w1/"+TString(Form("Collect_%s_%i_%i", sysSet.Data(), iSysInit, iSysFin));
   TString tsCommand = "if [ ! -d "+dirName+" ];then mkdir -p "+dirName+";fi"; cout<<endl<<tsCommand<<endl<<endl;
   system(tsCommand.Data());
 
   // fill csv file
-  ofstream ofpara_Nom(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%s_%i_%i/para_Nom.csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
+  ofstream ofpara_Nom(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv_w1/Collect_%s_%i_%i/para_Nom.csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
   if(!ofpara_Nom){
     ofpara_Nom.close();
     cout<<"error can't open file for record"<<endl;
@@ -312,13 +312,13 @@ void getMag_w1(int iSysInit = 1, int iSysFin = 1, TString sysSet = "photonallsys
 
   for(auto cat : catCuts){
    for(auto d = d_map.begin(); d != d_map.end(); d++){
-      ofstream ofmu(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%s_%i_%i/mu_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
+      ofstream ofmu(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv_w1/Collect_%s_%i_%i/mu_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
       if(!ofmu){
         ofmu.close();
         cout<<"error can't open file for record"<<endl;
       }
     
-      ofstream ofsigma(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv/Collect_%s_%i_%i/sigma_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
+      ofstream ofsigma(Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/csv_w1/Collect_%s_%i_%i/sigma_"+d->first+"_"+cat.first+".csv", sysSet.Data(), iSysInit, iSysFin), ios::out);
       if(!ofsigma){
         ofsigma.close();
         cout<<"error can't open file for record"<<endl;

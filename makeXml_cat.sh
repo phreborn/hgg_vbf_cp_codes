@@ -26,7 +26,7 @@ echo $bin
 echo $cats
 
 bkg_para="shape_sys/csv/para_bkg.csv"
-sig_para="yield_sys/csv/w1/N_yield.csv"
+sig_para="/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_w1/N_yield.csv"
 
 cat ${sig_para}
 cat ${bkg_para}
