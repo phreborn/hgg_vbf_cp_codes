@@ -1,5 +1,7 @@
 #! /bin/bash
 
+unblind=1
+
 CPevenAsi=0
 
 d_tilde=$(ls csv/ | grep TT_b3 | grep -v SM | cut -d '_' -f 4)
@@ -30,7 +32,11 @@ for d in $d_tilde;do
   out_xml="${rundir}/config/vbf_cp_${d}/d_tilde_${d}.xml"
   > $out_xml
   echo "<!DOCTYPE Combination  SYSTEM 'AnaWSBuilder.dtd'>" >> $out_xml
-  echo "<Combination WorkspaceName=\"combWS\" ModelConfigName=\"ModelConfig\" DataName=\"combData\" OutputFile=\"workspace/vbf_cp_${d}/vbf_cp_${d}.root\" Blind=\"true\">" >> $out_xml
+  if [ ${unblind} -eq 1 ];then
+    echo "<Combination WorkspaceName=\"combWS\" ModelConfigName=\"ModelConfig\" DataName=\"combData\" OutputFile=\"workspace/vbf_cp_${d}/vbf_cp_${d}.root\" Blind=\"false\">" >> $out_xml
+  else
+    echo "<Combination WorkspaceName=\"combWS\" ModelConfigName=\"ModelConfig\" DataName=\"combData\" OutputFile=\"workspace/vbf_cp_${d}/vbf_cp_${d}.root\" Blind=\"true\">" >> $out_xml
+  fi
   echo "" >> $out_xml
 
   for cat in $cats;do
