@@ -251,7 +251,7 @@ for i in range(nbin):
   sumSqVar = 0
   for proc in oobins[binname].values():
     if proc.name not in samples: continue
-    hists[proc.name].GetXaxis().SetBinLabel(i+1, binlabels[i])
+#    hists[proc.name].GetXaxis().SetBinLabel(i+1, binlabels[i])
     yldhat = proc.yldhat
     quadrSysVar = proc.quadrSysVar
     # !! signal POI best fit and error
@@ -279,6 +279,10 @@ Sig.SetFillColor(TColor.GetColor('#4FD5D6'))
 Sig.SetLineWidth(0)
 lg.AddEntry(Sig, 'VBF', 'f')
 
+### VBF only, background removed
+hdata_minus_bkg = hdata.Clone("data_minus_bkg")
+hdata_minus_bkg.SetLineWidth(1)
+
 Bkg = THStack("hs", "");
 for hname in hists.keys():
   if hname == 'VBF_RW': continue
@@ -286,20 +290,25 @@ for hname in hists.keys():
   htmp.SetFillColor(TColor.GetColor(colors[hname]))
   htmp.SetLineWidth(0)
   Bkg.Add(htmp)
+  if hname != 'VBF_RW':
+    # TODO discuss minus bkg MC w/ or w/o uncer.
+    hdata_minus_bkg.Add(htmp, -1)
   if hname == 'spurious': continue
-  lg.AddEntry(htmp, hname, "f")
+#  lg.AddEntry(htmp, hname, "f")
 Bkg.Add(Sig)
 
-ymax = hdata.GetMaximum()
+ymax = Sig.GetMaximum()
 ymax = 2.0 * ymax
-Bkg.SetMaximum(ymax)
+Sig.SetMaximum(ymax)
+Sig.SetMinimum(0)
+print 'oo mean', bdtcat, hdata_minus_bkg.GetMean()-3, '+/-', hdata_minus_bkg.GetMeanError()
 
 #Bkg.GetYaxis().SetTitle('nEvents')
 
-Bkg.Draw('hist')
+Sig.Draw('hist')
 
-lg.AddEntry(hdata, 'Asimov data', 'lep')
-hdata.Draw('same e')
+lg.AddEntry(hdata_minus_bkg, 'Asimov data', 'lep')
+hdata_minus_bkg.Draw('same e')
 
 lg.SetBorderSize(0);
 lg.Draw("same");
@@ -315,11 +324,13 @@ pad2.SetBottomMargin(0.2)
 pad2.Draw()
 pad2.cd()
 
-rhdata = hdata.Clone('ratio_data')
-rhmodel = Bkg.GetStack().Last().Clone('ratio_model')
+rhdata = hdata_minus_bkg.Clone('ratio_data')
+errmodel = Bkg.GetStack().Last().Clone('error_of_model')
+rhmodel = Sig.Clone('ratio_signal')
 
-bkgtmp = Bkg.GetStack().Last().Clone('ratio_denominator')
+bkgtmp = Sig.Clone('ratio_denominator')
 for i in range(nbin):
+  rhmodel.SetBinError(i+1, errmodel.GetBinError(i+1))
   bkgtmp.SetBinError(i+1, 0)
   rhdata.GetXaxis().SetBinLabel(i+1, binlabels[i])
 
@@ -344,4 +355,4 @@ rhdata.GetXaxis().SetLabelSize(rhdata.GetXaxis().GetLabelSize()*3)
 rhdata.Draw('ep')
 rhmodel.Draw('same e2')
 
-c.SaveAs("ooPostfit_"+bdtcat+".png")
+c.SaveAs("alter_ooPostfit_"+bdtcat+".png")
