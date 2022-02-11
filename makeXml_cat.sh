@@ -1,5 +1,7 @@
 #! /bin/bash
 
+inclQuadr=0
+
 includeSys=1
 SSAvailable=1
 
@@ -28,6 +30,9 @@ bkg_para="shape_sys/csv/para_bkg.csv"
 sig_para="yield_sys/csv/N_yield.csv"
 ggF_para="yield_sys/csv/N_yield.csv"
 VBF_para="yield_sys/SMEFT/csv/N_yield.csv"
+if [ ${inclQuadr} -eq 1 ];then
+  VBF_para="yield_sys/SMEFT/csv/N_yield_quad.csv"
+fi
 
 cat ${sig_para}
 cat ${bkg_para}
