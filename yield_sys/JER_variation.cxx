@@ -49,11 +49,11 @@ void JER_variation(){
 
         TString basepath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/";
 
-        TString mfpath = basepath+"csv/mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
+        TString mfpath = basepath+"csv_w1/mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
         std::map<TString, std::pair<float,float>> msysud;
         getVariation(mfpath, msysud);
 
-        TString dfpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv/jd_mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
+        TString dfpath = "/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_w1/jd_mag_yield_"+dsid+"_"+dName+"_"+catName+".csv";
         std::map<TString, std::pair<float,float>> dsysud;
         getVariation(dfpath, dsysud);
  
@@ -68,7 +68,7 @@ void JER_variation(){
 
           mdsysud[sysName.Data()] = std::make_pair(mvu-dvu, mvd-dvd);
         }
-        string outcsv = Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_jd/mag_yield_%s_%s_%s.csv", dsid.Data(), dName.Data(), catName.Data());
+        string outcsv = Form("/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/csv_jd_w1/mag_yield_%s_%s_%s.csv", dsid.Data(), dName.Data(), catName.Data());
         writeCsv(mdsysud, outcsv);        
       }
     }

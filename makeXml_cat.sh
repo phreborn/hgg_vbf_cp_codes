@@ -1,6 +1,6 @@
 #! /bin/bash
 
-includeSys=0
+includeSys=1
 SSAvailable=1
 
 injectTest=0

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-unblind=0
+unblind=1
 
 bkgFuncBias_Toy=0
 bkgFuncBias_Asi=0

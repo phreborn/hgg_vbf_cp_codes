@@ -1,7 +1,9 @@
 #! /bin/bash
 
+basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/
+
 inpath=csv/
-outpath=csv/
+outpath=${basedir}/csv_w1/
 
 transfer(){
   inf=$1
