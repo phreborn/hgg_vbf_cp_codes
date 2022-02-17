@@ -9,14 +9,14 @@ To generate yield uncertainty lines of WSI xml
 - source makeXml_category.sh (ihep condor mode: use gen_makeCat.sh)
 
 1)in yield_sys/:
-makeXml_category.sh(too slow, use gen_makeCat.sh to submit condor jobs)
+makeXml_category.sh(too slow, use gen_makeCat.sh => jobsSub_makeCat.sh to submit condor jobs), source makeXml_category.sh -d p01 (for d = 0.01)
 makeXml_top.sh
 
 2)in shape_sys/:
-makeXml_category.sh(too slow, use gen_makeCat.sh to submit condor jobs)
+makeXml_category.sh(too slow, use gen_makeCat.sh => jobsSub_makeCat.sh to submit condor jobs), source makeXml_category.sh -d p01 (for d = 0.01)
 makeXml_model_bkg.sh
 makeXml_model_sig.sh
 makeXml_model_sig_Asi.sh
 
 after the last 2 steps, in ./:
-makeXml_category.sh(too slow, use genSubmit.sh to submit condor jobs)
+makeXml_category.sh(too slow, use genSubmit.sh => jobsSub.sh to submit condor jobs), source makeXml_category.sh -d p01 (for d = 0.01)
