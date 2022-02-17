@@ -1,6 +1,9 @@
 #! /bin/bash
 #some bug in if in loop
 
+injectTest=0
+injectPoint=p01
+
 declare -A mapCtrType=(["RESOLUTION"]="logn" ["SCALE"]="gaus")
 echo ${!mapCtrType[*]}
 
@@ -30,11 +33,13 @@ fillSys(){
  
   resp_Prod="<Item Name=\"prod::resp_${para}("
   resp_Prod_RW="<Item Name=\"prod::resp_${para}_RW("
+  resp_Prod_Inj="<Item Name=\"prod::resp_${para}_${injectPoint}("
   
   if [ "${para}" == "SCALE" ];then
     echo "<Systematic Name=\"ATLAS_HIGGS_MASS\" Constr=\"gaus\" CentralValue=\"1\" Mag=\"0.0019\" WhereTo=\"shape\"/>" >> $ofsys
     resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
     resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_HIGGS_MASS,"
+    resp_Prod_Inj=${resp_Prod_Inj}"response::ATLAS_HIGGS_MASS,"
   fi
 
   lines=`cat $inf_para`
@@ -53,6 +58,7 @@ fillSys(){
 
     resp_Prod=${resp_Prod}"response::ATLAS_${sys_name},"
     resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_${sys_name},"
+    resp_Prod_Inj=${resp_Prod_Inj}"response::ATLAS_${sys_name},"
  
     mag_u=$(echo $line | cut -d ',' -f 2)
     mag_d=$(echo $line | cut -d ',' -f 3)
@@ -105,6 +111,11 @@ fillSys(){
 
   resp_Prod_RW=${resp_Prod_RW}")\"/>"
   echo ${resp_Prod_RW} >> $ofsys
+
+  if [ ${injectTest} -eq 1 ];then
+    resp_Prod_Inj=${resp_Prod_Inj}")\"/>"
+    echo ${resp_Prod_Inj} >> $ofsys
+  fi
 }
 
 basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/

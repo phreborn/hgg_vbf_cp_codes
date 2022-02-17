@@ -6,7 +6,7 @@ bkgFuncBias_Toy=0
 bkgFuncBias_Asi=0
 
 injectTest=0
-injectPoint=m03
+injectPoint=p01
 
 d_tilde=$(ls csv/ | grep TT_b3 | grep -v SM | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")

@@ -4,7 +4,7 @@ includeSys=1
 SSAvailable=1
 
 injectTest=0
-injectPoint=m03
+injectPoint=p01
 
 tnum=0
 bkgFuncBias_Toy=0
@@ -118,6 +118,7 @@ for cat in $cats;do
       echo "" >> $out_xml
     fi
 
+### here m00 in "config/vbf_cp_m00" could be changed to the WS point
     echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
     #if [ $includeSys -eq 1 ];then
     #for sys in $sys_VBF_SM;do
@@ -138,14 +139,14 @@ for cat in $cats;do
     echo "" >> $out_xml
 
     if [ $injectTest -eq 1 ];then
-      echo "  <Sample Name=\"VBF_${injectPoint}\" InputFile=\"config/vbf_cp_${injectPoint}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "  <Sample Name=\"VBF_${injectPoint}\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:_${injectPoint}Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig${injectPoint}\">" >> $out_xml
       echo "    <NormFactor Name=\"yield_VBF_${injectPoint}[${y_VBF_injectTest}]\"/>" >> $out_xml
       echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
       echo "    <NormFactor Name=\"mu_VBF_${injectPoint}[1]\" />" >> $out_xml
       echo "  </Sample>" >> $out_xml
       echo "" >> $out_xml
 
-      echo "  <Sample Name=\"ggH_${injectPoint}\" InputFile=\"config/vbf_cp_${injectPoint}/model/signal_:category:.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+      echo "  <Sample Name=\"ggH_${injectPoint}\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:_${injectPoint}Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig${injectPoint}\">" >> $out_xml
       echo "    <NormFactor Name=\"yield_ggH_${injectPoint}[${y_ggH}]\"/>" >> $out_xml
       echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
       echo "    <NormFactor Name=\"mu_ggH_${injectPoint}[1]\" />" >> $out_xml # can be used for turn on/off a process

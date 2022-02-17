@@ -1,5 +1,8 @@
 #! /bin/bash
 
+injectTest=1
+injectPoint=p01
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
@@ -25,10 +28,10 @@ for d in $d_tilde;do
 for cat in $cats;do
     echo ${d}_${cat}
 
-    out_xml="${rundir}/config/vbf_cp_${d}/model/signal_OO_${cat}.xml"
+    out_xml="${rundir}/config/vbf_cp_${d}/model/signal_OO_${cat}_${injectPoint}Asi.xml"
     > $out_xml
 
-    paras=$(cat ${ifpara} | grep "Nominal_${d}_${cat},"); # b1 b10
+    paras=$(cat ${ifpara} | grep "Nominal_${injectPoint}_${cat},"); # b1 b10
     mu=`echo $paras | cut -d ',' -f 2`
     sigma=`echo $paras | cut -d ',' -f 3`
     alpLo=`echo $paras | cut -d ',' -f 4`
@@ -38,18 +41,18 @@ for cat in $cats;do
 
     echo "<!DOCTYPE Model SYSTEM 'AnaWSBuilder.dtd'>" >> $out_xml
     echo "<Model Type=\"UserDef\" CacheBinning=\"100000\">" >> $out_xml
-    echo "<Item Name=\"muCBNom_RW[$mu]\"/>" >> $out_xml
-    echo "<Item Name=\"sigmaCBNom_RW[$sigma]\"/>" >> $out_xml
-    echo "<Item Name=\"alphaCBLo_RW[$alpLo]\"/>" >> $out_xml
-    echo "<Item Name=\"nCBLo_RW[$nLo]\"/>" >> $out_xml
-    echo "<Item Name=\"alphaCBHi_RW[$alpHi]\"/>" >> $out_xml
-    echo "<Item Name=\"nCBHi_RW[$nHi]\"/>" >> $out_xml
+    echo "<Item Name=\"muCBNom_${injectPoint}[$mu]\"/>" >> $out_xml
+    echo "<Item Name=\"sigmaCBNom_${injectPoint}[$sigma]\"/>" >> $out_xml
+    echo "<Item Name=\"alphaCBLo_${injectPoint}[$alpLo]\"/>" >> $out_xml
+    echo "<Item Name=\"nCBLo_${injectPoint}[$nLo]\"/>" >> $out_xml
+    echo "<Item Name=\"alphaCBHi_${injectPoint}[$alpHi]\"/>" >> $out_xml
+    echo "<Item Name=\"nCBHi_${injectPoint}[$nHi]\"/>" >> $out_xml
     #echo "<Item Name=\"prod::muCB(muCBNom,One[1])\"/>" >> $out_xml
     #echo "<Item Name=\"prod::sigmaCB(sigmaCBNom,One)\"/>" >> $out_xml
     #echo "<Item Name=\"prod::muCB(muCBNom,resp_SCALE,response::ATLAS_LHCmass)\"/>" >> $out_xml
-    echo "<Item Name=\"prod::muCB_RW(muCBNom_RW,resp_SCALE_RW)\"/>" >> $out_xml
-    echo "<Item Name=\"prod::sigmaCB_RW(sigmaCBNom_RW,resp_RES_RW)\"/>" >> $out_xml
-    echo "<ModelItem Name=\"RooTwoSidedCBShape::signal_RW(:observable:, muCB_RW, sigmaCB_RW, alphaCBLo_RW, nCBLo_RW, alphaCBHi_RW, nCBHi_RW)\"/>" >> $out_xml
+    echo "<Item Name=\"prod::muCB_${injectPoint}(muCBNom_${injectPoint},resp_SCALE_${injectPoint})\"/>" >> $out_xml
+    echo "<Item Name=\"prod::sigmaCB_${injectPoint}(sigmaCBNom_${injectPoint},resp_RES_${injectPoint})\"/>" >> $out_xml
+    echo "<ModelItem Name=\"RooTwoSidedCBShape::signal_${injectPoint}(:observable:, muCB_${injectPoint}, sigmaCB_${injectPoint}, alphaCBLo_${injectPoint}, nCBLo_${injectPoint}, alphaCBHi_${injectPoint}, nCBHi_${injectPoint})\"/>" >> $out_xml
     echo "</Model>" >> $out_xml
 
 done
