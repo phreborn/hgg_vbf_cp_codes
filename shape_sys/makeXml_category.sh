@@ -1,6 +1,8 @@
 #! /bin/bash
 #some bug in if in loop
 
+basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
+
 injectTest=0
 injectPoint=p01
 
@@ -13,7 +15,7 @@ echo ${!mapPara[*]}
 nonShapeSys=("EG_RESOLUTION_AF2" "EG_RESOLUTION_ALL")
 
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
-d_tilde=$(ls ../yield_sys/csv/ | grep b3 | grep mag | grep -v SM | grep TT | cut -d '_' -f 4)
+d_tilde=$(ls ${basedir}/../yield/csv/ | grep b3 | grep mag | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
 
 if [ $1 = "-d" ];then d_tilde=$2;fi
@@ -117,8 +119,6 @@ fillSys(){
     echo ${resp_Prod_Inj} >> $ofsys
   fi
 }
-
-basedir=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
 
 for d in  $d_tilde ; do
   for cat in $cats ; do

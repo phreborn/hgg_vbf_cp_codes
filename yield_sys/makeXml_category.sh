@@ -1,10 +1,12 @@
 #! /bin/bash
 
+basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/
+
 declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["aS"]="logn" ["shower"]="gaus" ["rest_Higgs"]="gaus" ["mcstat"]="logn")
 echo ${!mapCtrType[*]}
 
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
-d_tilde=$(ls csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
+d_tilde=$(ls ${basepath}/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
 
 if [ $1 = "-d" ];then d_tilde=$2;fi
@@ -72,18 +74,16 @@ do
 done
 }
 
-basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/
-
 for id in 346214 ; do
   for d in  $d_tilde ; do
     for cat in $cats ; do
       echo ""
       echo ======= ${d}_${cat} =======
       echo ""
-      ifcsv_theo="TheorySys/mag_theory_${id}_${d}_${cat}.csv";
-      ifcsv_exp="csv/mag_yield_${id}_${d}_${cat}.csv";
+      ifcsv_theo="${basepath}/TheorySys/mag_theory_${id}_${d}_${cat}.csv";
+      ifcsv_exp="${basepath}/csv/mag_yield_${id}_${d}_${cat}.csv";
       ifcsv_exp_jd="${basepath}/csv_jd/mag_yield_${id}_${d}_${cat}.csv";
-      ifcsv_tmp="csv/tmp_${id}_${d}_${cat}.csv"
+      ifcsv_tmp="${basepath}/csv/tmp_${id}_${d}_${cat}.csv"
       > $ifcsv_tmp
       cat $ifcsv_exp | grep -v "JER_" >> $ifcsv_tmp
       cat $ifcsv_exp_jd | grep "JER_" >> $ifcsv_tmp
@@ -101,10 +101,10 @@ for id in 343981; do
     echo ""
     echo ======= ${id}_${cat} =======
     echo ""
-    ifcsv_theo="TheorySys/mag_theory_${id}_SM_${cat}.csv";
-    ifcsv_exp="csv/mag_yield_${id}_SM_${cat}.csv";
+    ifcsv_theo="${basepath}/TheorySys/mag_theory_${id}_SM_${cat}.csv";
+    ifcsv_exp="${basepath}/csv/mag_yield_${id}_SM_${cat}.csv";
     ifcsv_exp_jd="${basepath}/csv_jd/mag_yield_${id}_SM_${cat}.csv";
-    ifcsv_tmp="csv/tmp_${id}_SM_${cat}.csv"
+    ifcsv_tmp="${basepath}/csv/tmp_${id}_SM_${cat}.csv"
     > $ifcsv_tmp
     cat $ifcsv_exp | grep -v "JER_" >> $ifcsv_tmp
     cat $ifcsv_exp_jd | grep "JER_" >> $ifcsv_tmp

@@ -1,11 +1,13 @@
 #! /bin/bash
 
+basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/shape/
+
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
-d_tilde=$(ls ../yield_sys/csv/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
+d_tilde=$(ls ${basepath}/../yield/csv/ | grep TT_b2 | grep -v SM | cut -d '_' -f 4)
 d_tilde=$(cat ../Dtilde | grep -v "#")
-bin=$(ls ../yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
+bin=$(ls ${basepath}/../yield/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
 echo $bin
@@ -16,7 +18,7 @@ echo $cats
 #echo ${!mapPdf[*]}
 
 rundir=".."
-ifpara="csv/para_bkg.csv"
+ifpara="${basepath}/csv/para_bkg.csv"
 
 for d in $d_tilde;do
 #for d in m00;do

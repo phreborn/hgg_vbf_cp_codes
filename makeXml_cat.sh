@@ -1,5 +1,7 @@
 #! /bin/bash
 
+basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/
+
 includeSys=1
 SSAvailable=1
 
@@ -13,20 +15,20 @@ bkgFuncBias_Asi=0
 #cats=$(ls /scratchfs/atlas/chenhr/atlaswork/VBF_CP/calcBDT/outputs/mc16a/ | grep  343981_ggF_Nominal | cut -d _ -f 4 | cut -d . -f 1)
 cats=$(cat ../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)
 
-d_tilde=$(ls yield_sys/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
+d_tilde=$(ls ${basepath}/yield/csv/ | grep b3 | grep -v SM | grep TT | cut -d '_' -f 4)
 d_tilde=$(cat Dtilde | grep -v "#")
 
 if [ $1 = "-d" ];then d_tilde=$2;fi
 
-bin=$(ls yield_sys/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
+bin=$(ls ${basepath}/yield/csv/ | grep m01 | cut -d '_' -f 5 | cut -d '.' -f 1)
 
 echo $d_tilde
 echo $bin
 
 echo $cats
 
-bkg_para="shape_sys/csv/para_bkg.csv"
-sig_para="yield_sys/csv/N_yield.csv"
+bkg_para="${basepath}/shape/csv/para_bkg.csv"
+sig_para="${basepath}/yield/csv/N_yield.csv"
 
 cat ${sig_para}
 cat ${bkg_para}
@@ -51,7 +53,7 @@ for cat in $cats;do
   sys_ggH=$(cat yield_sys/xml/sample_343981_SM_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
   sys_VBF_SM=$(cat yield_sys/xml/sample_346214_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
 
-  spurious=$(cat shape_sys/bkg_SS.csv | grep ${cat} | cut -d , -f 3)
+  spurious=$(cat ${basepath}/shape/bkg_SS.csv | grep ${cat} | cut -d , -f 3)
 
   y_VBF_injectTest=$(cat ${sig_para} | grep "VBF_${injectPoint}_${cat}," | cut -d ',' -f 2)
 
@@ -78,7 +80,7 @@ for cat in $cats;do
       tfix=
       hname=
       if [[ ${cat} =~ LT ]];then
-        bfunc=$(cat shape_sys/bkg_SS.csv | grep ${cat} | cut -d , -f 2)
+        bfunc=$(cat ${basepath}/shape/bkg_SS.csv | grep ${cat} | cut -d , -f 2)
         tfix=Asimov_${bfunc}
         hname=Asi_${cat}
       else
