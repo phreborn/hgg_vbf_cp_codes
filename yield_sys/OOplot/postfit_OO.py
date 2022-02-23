@@ -20,9 +20,11 @@ gStyle.SetOptStat(0)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--bdtcat', type=str, default='TT')
+parser.add_argument('-d', '--dval', type=str, default='m00')
 
 result = parser.parse_args()
 bdtcat = result.bdtcat
+dval = result.dval
 
 samples = ['VBF_RW', 'ggH', 'background', 'spurious']
 poiname = 'mu_VBF_RW'
@@ -96,7 +98,7 @@ class Sample:
       sys.exit(0)
 
 ### get post fit params
-frslt = TFile("/scratchfs/atlas/huirun/atlaswork/VBF_CP/WSBuilder/xmlAnaWSBuilder/run/outAllCats_allSys/out_m00.root", 'read')
+frslt = TFile("/scratchfs/atlas/huirun/atlaswork/VBF_CP/WSBuilder/xmlAnaWSBuilder/run/outAllCats_allSys/out_"+dval+".root", 'read')
 fitResult = frslt.Get("fitResult");
 paras = {}
 for par in fitResult.floatParsFinal():
@@ -123,13 +125,23 @@ with open(path_cfgCats,'r') as f:
     #print cat
     cats.append(cat)
 
+# get bkg fraction in signal window
+bkgFracs = {}
+with open("bkgSRFrac_%s.txt"%(dval), 'r') as f:
+  for line in f.readlines():
+    for cat in cats:
+      if cat not in line: continue
+      lattr = line.replace('\n', '').split(',')
+      frac = float(lattr[1])
+      bkgFracs[cat] = frac
+
 oobins = {}
 for i in range(nbin):
   binname = 'b'+str(i+1)
   catname = bdtcat+'_'+binname
   print '\n\n'+catname
-  dval = 'm00'
   xmlPath = "../../../WSBuilder/xmlAnaWSBuilder/run/configAllCats/vbf_cp_%s/channel/category_OO_%s.xml"%(dval, catname)
+  xmlPath = "configAllCats/vbf_cp_%s/channel/category_OO_%s.xml"%(dval, catname) # SWcut
   print xmlPath
   xtree = ET.parse(xmlPath)
   xroot = xtree.getroot()
@@ -173,7 +185,7 @@ for i in range(nbin):
     sampleList[procname] = sample
 
   ## adding continuum process
-  bkgyld = paras['nbkg_OO_'+catname][0]
+  bkgyld = paras['nbkg_OO_'+catname][0] * bkgFracs[catname] # SWcut
   bkgquadrSysVar = abs(paras['nbkg_OO_'+catname][1])
   sampleList['background'].yld = bkgyld
   sampleList['background'].quadrSysVar = bkgquadrSysVar
@@ -231,7 +243,7 @@ hdata = TH1F('Asimov_data', '', nbin, 0, nbin)
 for i in range(nbin):
   binname = 'b'+str(i+1)
   catname = bdtcat+'_'+binname
-  with open("data_observed.txt", 'r') as f:
+  with open("data_observed_SR.txt", 'r') as f: # SWcut
     for line in f.readlines():
       if catname not in line: continue
       ndata = float(line.split(':')[1])
@@ -264,6 +276,7 @@ for i in range(nbin):
     hists[proc.name].SetBinError(i+1, quadrSysVar)
 
 ### drawing
+fout = TFile("plotsPostfit/plotMaterials_"+bdtcat+"_"+dval+"_SW.root", "recreate")
 c = TCanvas("c", "canvas", 800, 800);
 
 pad1 = TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
@@ -277,7 +290,7 @@ lg.SetFillColorAlpha(kBlue, 0)
 Sig = hists['VBF_RW'].Clone('cl_VBF')
 Sig.SetFillColor(TColor.GetColor('#4FD5D6'))
 Sig.SetLineWidth(0)
-lg.AddEntry(Sig, 'VBF', 'f')
+lg.AddEntry(Sig, 'VBF ('+dval+')', 'f')
 
 Bkg = THStack("hs", "");
 for hname in hists.keys():
@@ -286,8 +299,12 @@ for hname in hists.keys():
   htmp.SetFillColor(TColor.GetColor(colors[hname]))
   htmp.SetLineWidth(0)
   Bkg.Add(htmp)
+  fout.cd()
+  htmp.Write()
   if hname == 'spurious': continue
   lg.AddEntry(htmp, hname, "f")
+fout.cd()
+Bkg.GetStack().Last().Clone('cl_bkgs').Write()
 Bkg.Add(Sig)
 
 ymax = hdata.GetMaximum()
@@ -307,6 +324,7 @@ lg.Draw("same");
 ATLASLabel(0.22,0.85,"Preliminary");
 myText(0.22, 0.80, 1, "#sqrt{s}= 13 TeV, 139 fb^{-1}");
 myText(0.22, 0.75, 1, "VBF CP H #rightarrow #it{#gamma#gamma}, "+bdtcat);
+myText(0.22, 0.70, 1, "m_{#gamma#gamma} in [118, 132] GeV", 0.05); # SWcut
 
 c.cd()
 pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.3)
@@ -341,7 +359,24 @@ rhdata.GetXaxis().SetTitleSize(0.1)
 rhdata.GetXaxis().SetTitleOffset(0.8)
 rhdata.GetXaxis().SetLabelSize(rhdata.GetXaxis().GetLabelSize()*3)
 
+yscale = 1.8
+rhmax = rhdata.GetMaximum()
+rhmin = rhdata.GetMinimum()
+rhdata.SetMaximum(rhmax*yscale)
+rhdata.SetMinimum(1-abs(rhmax*yscale-1))
 rhdata.Draw('ep')
 rhmodel.Draw('same e2')
 
-c.SaveAs("ooPostfit_"+bdtcat+".png")
+c.SaveAs("plotsPostfit/ooPostfit_"+bdtcat+"_"+dval+"_SW.png")
+c.SaveAs("plotsPostfit/ooPostfit_"+bdtcat+"_"+dval+"_SW.pdf")
+
+fout.cd()
+
+Sig.Write()
+pad1.Write()
+Bkg.Write()
+hdata.Write()
+lg.Write()
+pad2.Write()
+rhdata.Write()
+rhmodel.Write()
