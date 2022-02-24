@@ -1,3 +1,4 @@
+=== PREPARING csv files
 in yield_sys/:
 - source makeXml_top.sh
 To generate yield magnitude numbers
@@ -8,6 +9,7 @@ To generate yield magnitude numbers
 To generate yield uncertainty lines of WSI xml
 - source makeXml_category.sh (ihep condor mode: use gen_makeCat.sh)
 
+=== CREATING xml files
 1)in yield_sys/:
 makeXml_category.sh(too slow, use gen_makeCat.sh => jobsSub_makeCat.sh to submit condor jobs), source makeXml_category.sh -d p01 (for d = 0.01)
 makeXml_top.sh
@@ -20,3 +22,11 @@ makeXml_model_sig_Asi.sh
 
 after the last 2 steps, in ./:
 makeXml_category.sh(too slow, use genSubmit.sh => jobsSub.sh to submit condor jobs), source makeXml_category.sh -d p01 (for d = 0.01)
+
+=== XML for toy MC
+1)set 'bkgFuncBias_Toy' in ./makeXml_cat.sh yield_sys/makeXml_top.sh ('includeSys' could be disabled in ./makeXml_cat.sh) (adjust toy input path under 'if [ $bkgFuncBias_Toy -eq 1 ]' in ./makeXml_cat.sh if needed)
+2)source duplicToy.sh (mod 'configToys' if needed) (for condor mode, use toyGen.sh)
+in xmlAnaWSBuilder/run/:
+3)use toyGen.sh to run WS building and fit (mod 'configToys' if needed)
+4)use ToyLogNLL.sh to get NLL points
+
