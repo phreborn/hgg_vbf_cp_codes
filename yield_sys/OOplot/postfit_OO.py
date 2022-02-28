@@ -3,6 +3,7 @@
 
 import sys
 import argparse
+from array import array
 import xml.etree.ElementTree as ET
 
 from ROOT import *
@@ -21,6 +22,7 @@ gStyle.SetOptStat(0)
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--bdtcat', type=str, default='TT')
 parser.add_argument('-d', '--dval', type=str, default='m00')
+parser.add_argument('--rebin', action="store_true")
 
 result = parser.parse_args()
 bdtcat = result.bdtcat
@@ -97,6 +99,27 @@ class Sample:
       print 'ERROR: posthat not implemented!'
       sys.exit(0)
 
+def rebinHist(hist, oriNbin, rebinArray):
+  nbins = hist.GetNbinsX()
+  nbinsA = len(rebinArray)
+  if nbins != nbinsA-1: print "WARING!!! in rebinHist()"
+
+  loweredge = rebinArray[0]
+  upperedge = rebinArray[-1]
+  h = TH1F('h', '', oriNbin, loweredge, upperedge)
+  reh = h.Rebin(nbinsA-1, 'reh', rebinArray)
+
+  for ib in range(nbins):
+    cont = hist.GetBinContent(ib+1)
+    err = hist.GetBinError(ib+1)
+    xint = rebinArray[ib+1]-rebinArray[ib]
+    cont = cont/xint
+    err = err/xint
+    reh.SetBinContent(ib+1, cont)
+    reh.SetBinError(ib+1, err)
+
+  return reh
+
 ### get post fit params
 frslt = TFile("/scratchfs/atlas/huirun/atlaswork/VBF_CP/WSBuilder/xmlAnaWSBuilder/run/outAllCats_allSys/out_"+dval+".root", 'read')
 fitResult = frslt.Get("fitResult");
@@ -114,6 +137,13 @@ for par in fitResult.floatParsFinal():
 binlabels = ['-99:-2', '-2:-1', '-1:0', '0:1', '1:2', '2:99']
 #bdtcats = ['TT', 'TL', 'LT', 'LL']
 nbin = len(binlabels)
+
+doRebin = result.rebin
+xrebins = [-10, -2, -1, 0, 1, 2, 10]
+
+rebinarray = array('d')
+for edge in xrebins:
+  rebinarray.append(edge)
 
 # get cats name
 path_cfgCats="../../../nom_WS/cats.cfg"
@@ -251,6 +281,11 @@ for i in range(nbin):
       hdata.SetBinError(i+1, ndata**0.5)
   #print catname, hdata.GetBinContent(i+1)
 
+if doRebin:
+  hdatatmp = hdata
+  hdatanew = rebinHist(hdatatmp, 20, rebinarray)
+  hdata = hdatanew
+
 ### fill histograms
 hists = {}
 for proc in oobins[binname].values():
@@ -274,6 +309,13 @@ for i in range(nbin):
       print 'VBF yield:', yldhat, 'variation by poi:',yldMuErr, 'variation by sys:', proc.quadrSysVar, 'tot variation: ', quadrSysVar
     hists[proc.name].SetBinContent(i+1, yldhat)
     hists[proc.name].SetBinError(i+1, quadrSysVar)
+
+if doRebin:
+  for proc in oobins[binname].values():
+    if proc.name not in samples: continue
+    htmp = hists[proc.name]
+    hnew = rebinHist(htmp, 20, rebinarray)
+    hists[proc.name] = hnew
 
 ### drawing
 fout = TFile("plotsPostfit/plotMaterials_"+bdtcat+"_"+dval+"_SW.root", "recreate")
