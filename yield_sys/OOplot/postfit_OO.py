@@ -118,7 +118,7 @@ def rebinHist(hist, oriNbin, rebinArray):
     reh.SetBinContent(ib+1, cont)
     reh.SetBinError(ib+1, err)
 
-  return reh
+  return reh.Clone(hist.GetName())
 
 ### get post fit params
 frslt = TFile("/scratchfs/atlas/huirun/atlaswork/VBF_CP/WSBuilder/xmlAnaWSBuilder/run/outAllCats_allSys/out_"+dval+".root", 'read')

@@ -28,6 +28,8 @@ result = parser.parse_args()
 bdtcat = result.bdtcat
 dval = result.dval
 
+yScales = {'TT':3, 'TL':2, 'LT':4}
+
 samples = ['VBF_RW', 'ggH', 'background', 'spurious']
 poiname = 'mu_VBF_RW'
 colors = {
@@ -99,6 +101,9 @@ class Sample:
       print 'ERROR: posthat not implemented!'
       sys.exit(0)
 
+def clearBinError(hist):
+  for ib in range(hist.GetNbinsX()): hist.SetBinError(ib+1, 0)
+
 def rebinHist(hist, oriNbin, rebinArray):
   nbins = hist.GetNbinsX()
   nbinsA = len(rebinArray)
@@ -118,7 +123,7 @@ def rebinHist(hist, oriNbin, rebinArray):
     reh.SetBinContent(ib+1, cont)
     reh.SetBinError(ib+1, err)
 
-  return reh
+  return reh.Clone(hist.GetName())
 
 ### get post fit params
 #frslt = TFile("/scratchfs/atlas/huirun/atlaswork/VBF_CP/WSBuilder/xmlAnaWSBuilder/run/outTT_allSys/out_"+dval+".root", 'read')
@@ -352,7 +357,10 @@ for hname in hists.keys():
   Bkg.Add(htmp)
   if hname != 'VBF_RW':
     # TODO discuss minus bkg MC w/ or w/o uncer.
-    hdata_minus_bkg.Add(htmp, -1)
+    #hdata_minus_bkg.Add(htmp, -1)
+    hnoerr = htmp.Clone()
+    clearBinError(hnoerr)
+    hdata_minus_bkg.Add(hnoerr, -1)
   if hname == 'spurious': continue
 #  lg.AddEntry(htmp, hname, "f")
 fout.cd()
@@ -415,10 +423,11 @@ rhdata.GetXaxis().SetTitleSize(0.1)
 rhdata.GetXaxis().SetTitleOffset(0.8)
 rhdata.GetXaxis().SetLabelSize(rhdata.GetXaxis().GetLabelSize()*3)
 
+yscale = yScales[bdtcat]
 rhmax = rhdata.GetMaximum()
 rhmin = rhdata.GetMinimum()
-rhdata.SetMaximum(rhmax*1.3)
-rhdata.SetMinimum(1-abs(rhmax*1.3-1))
+rhdata.SetMaximum(rhmax*yscale)
+rhdata.SetMinimum(1-abs(rhmax*yscale-1))
 rhdata.Draw('ep')
 rhmodel.Draw('same e2')
 

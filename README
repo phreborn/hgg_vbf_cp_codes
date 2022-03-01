@@ -30,3 +30,12 @@ in xmlAnaWSBuilder/run/:
 3)use toyGen.sh to run WS building and fit (mod 'configToys' if needed)
 4)use ToyLogNLL.sh to get NLL points
 
+=== OO post-fit plotting
+1)copy xml config directory into yield_sys/OOplot/configAllCats/
+use subToSR.sh to replace MC yields in full range by in signal window
+2)in StatisticsTools/:
+use ./bin/cutPostFitBkg.exe to get signal window fractions of post-fit background pdf (input: xmlAnaWSBuilder/run/outAllCats_allSys/out_${dval}.root)
+copy bkgSRFrac/bkgSRFrac_${dval}.txt to yield_sys/OOplot/
+3)postfit_OO.py and alter_postfit_OO.py => plotsPostfit/plotMaterials_*root
+4a)one can go to addupOOplot_subBkg.py and addupOOplot.py
+4b)one can go to integrateInPads.py
