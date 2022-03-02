@@ -35,7 +35,7 @@ procs_re = ['VBF', 'ggH', 'background', 'spurious']
 binlabels = ['-99:-2', '-2:-1', '-1:0', '0:1', '1:2', '2:99']
 nbin = len(binlabels)
 
-rebinarray = array('d', [-10, -2, -1, 0, 1, 2, 10])
+rebinarray = array('d', [-6, -2, -1, 0, 1, 2, 6])
 
 def rebinHist(hist, oriNbin, rebinArray):
   nbins = hist.GetNbinsX()
@@ -142,6 +142,7 @@ hcpv1.SetMarkerSize(0)
 c = TCanvas("c", "canvas", 800, 700);
 
 pad1 = TPad("pad1", "pad1", 0, 0.45, 1, 1.0);
+pad1 = TPad("pad1", "pad1", 0, 0.375, 1, 1.0);
 pad1.SetBottomMargin(0.01)
 pad1.Draw()
 pad1.cd()
@@ -151,7 +152,10 @@ lg.SetFillColorAlpha(kBlue, 0)
 
 for st in hfmodel.GetStack():
   if st.GetName() == 'spurious': continue
-  lg.AddEntry(st, st.GetName().replace('cl_', ''), 'f')
+  if st.GetName() == 'VBF':
+    lg.AddEntry(st, 'VBF(SM)', 'f')
+  else:
+    lg.AddEntry(st, st.GetName().replace('cl_', ''), 'f')
 
 ymax = hfdata.GetMaximum()
 ymax = 2.0 * ymax
@@ -173,6 +177,13 @@ hfmodel.Draw('hist same')
 lg.AddEntry(hfdata, 'data', 'lep')
 hfdata.Draw('same e')
 
+hfmodelerr = hfmodel.GetStack().Last().Clone("hfmodelerr")
+hfmodelerr.SetMarkerSize(0)
+hfmodelerr.SetFillStyle(3004)
+hfmodelerr.SetFillColor(kBlack)
+lg.AddEntry(hfmodelerr, 'uncer.', 'f')
+hfmodelerr.Draw('same e2')
+
 lg.SetBorderSize(0);
 lg.Draw("same");
 
@@ -181,47 +192,47 @@ myText(0.22, 0.80, 1, "#sqrt{s}= 13 TeV, 139 fb^{-1}");
 myText(0.22, 0.75, 1, "VBF CP H #rightarrow #it{#gamma#gamma}");
 myText(0.22, 0.70, 1, "m_{#gamma#gamma} in [118, 132] GeV", 0.05); # SWcut
 
-c.cd()
-pad3 = TPad("pad3", "pad3", 0, 0.05, 1, 0.25)
-pad3.SetTopMargin(0)
-pad3.SetBottomMargin(0.5)
-pad3.Draw()
-pad3.cd()
-
-rhdata = hfdata.Clone('ratio_data')
-rhmodel = hfmodel.GetStack().Last().Clone('ratio_model')
-
-bkgtmp = hfmodel.GetStack().Last().Clone('ratio_denominator')
-for i in range(nbin):
-  bkgtmp.SetBinError(i+1, 0)
-#  rhdata.GetXaxis().SetBinLabel(i+1, binlabels[i])
-
-rhdata.Divide(bkgtmp)
-rhmodel.Divide(bkgtmp)
-
-rhmodel.SetFillStyle(3001)
-rhmodel.SetFillColor(kBlack)
-rhmodel.SetMarkerStyle(20)
-rhmodel.SetMarkerSize(0)
-
-rhdata.GetYaxis().SetTitle('Data/Model')
-rhdata.GetYaxis().SetTitleSize(0.1)
-rhdata.GetYaxis().SetTitleOffset(0.5)
-rhdata.GetYaxis().SetLabelSize(0.1)
-#rhdata.GetYaxis().SetNdivisions(rhdata.GetYaxis().GetNdivisions()/3)
-rhdata.GetXaxis().SetTitle('OO')
-rhdata.GetXaxis().SetTitleSize(0.1)
-rhdata.GetXaxis().SetTitleOffset(0.8)
-rhdata.GetXaxis().SetLabelSize(rhdata.GetXaxis().GetLabelSize()*3)
-
-yscale = 1.25
-rhmax = rhdata.GetMaximum()
-rhmin = rhdata.GetMinimum()
-rhdata.SetMaximum(rhmax*yscale)
-rhdata.SetMinimum(1-abs(rhmax*yscale-1))
-rhdata.GetXaxis().SetTitleSize(0.2)
-rhdata.Draw('ep')
-rhmodel.Draw('same e2')
+#c.cd()
+#pad3 = TPad("pad3", "pad3", 0, 0.05, 1, 0.25)
+#pad3.SetTopMargin(0)
+#pad3.SetBottomMargin(0.5)
+#pad3.Draw()
+#pad3.cd()
+#
+#rhdata = hfdata.Clone('ratio_data')
+#rhmodel = hfmodel.GetStack().Last().Clone('ratio_model')
+#
+#bkgtmp = hfmodel.GetStack().Last().Clone('ratio_denominator')
+#for i in range(nbin):
+#  bkgtmp.SetBinError(i+1, 0)
+##  rhdata.GetXaxis().SetBinLabel(i+1, binlabels[i])
+#
+#rhdata.Divide(bkgtmp)
+#rhmodel.Divide(bkgtmp)
+#
+#rhmodel.SetFillStyle(3001)
+#rhmodel.SetFillColor(kBlack)
+#rhmodel.SetMarkerStyle(20)
+#rhmodel.SetMarkerSize(0)
+#
+#rhdata.GetYaxis().SetTitle('Data/Model')
+#rhdata.GetYaxis().SetTitleSize(0.1)
+#rhdata.GetYaxis().SetTitleOffset(0.5)
+#rhdata.GetYaxis().SetLabelSize(0.1)
+##rhdata.GetYaxis().SetNdivisions(rhdata.GetYaxis().GetNdivisions()/3)
+#rhdata.GetXaxis().SetTitle('OO')
+#rhdata.GetXaxis().SetTitleSize(0.1)
+#rhdata.GetXaxis().SetTitleOffset(0.8)
+#rhdata.GetXaxis().SetLabelSize(rhdata.GetXaxis().GetLabelSize()*3)
+#
+#yscale = 1.25
+#rhmax = rhdata.GetMaximum()
+#rhmin = rhdata.GetMinimum()
+#rhdata.SetMaximum(rhmax*yscale)
+#rhdata.SetMinimum(1-abs(rhmax*yscale-1))
+#rhdata.GetXaxis().SetTitleSize(0.2)
+#rhdata.Draw('ep')
+#rhmodel.Draw('same e2')
 
 ###############################################################################################
 ############# below only need to prepare background subtracted hfdata and dfmodel #############
@@ -238,10 +249,20 @@ mhcpv2tmp = mhfcpv2
 mhcpv2new = rebinHist(mhcpv2tmp, 20, rebinarray)
 mhfcpv2 = mhcpv2new
 
+mhfcpv3 = TH1F('mhfcpv3', '', nbin, 0, nbin)
+mhcpv3tmp = mhfcpv3
+mhcpv3new = rebinHist(mhcpv3tmp, 20, rebinarray)
+mhfcpv3 = mhcpv3new
+
 mhfsig = TH1F('mhfsig', '', nbin, 0, nbin)
 mhsigtmp = mhfsig
 mhsignew = rebinHist(mhsigtmp, 20, rebinarray)
 mhfsig = mhsignew
+
+mhfbkgs = TH1F('mhfbkgs', '', nbin, 0, nbin)
+mhbkgstmp = mhfbkgs
+mhbkgsnew = rebinHist(mhbkgstmp, 20, rebinarray)
+mhfbkgs = mhbkgsnew
 
 mhfdata = TH1F('mhfdata', '', nbin, 0, nbin)
 mhdatatmp = mhfdata
@@ -270,6 +291,17 @@ for proc in procs:
   cpv2hists[hname].SetFillColor(TColor.GetColor(colors[hname]))
   cpv2hists[hname].SetLineWidth(0)
 
+cpv3hists = {}
+for proc in procs:
+  hname = proc
+  print hname
+  cpv3hists[hname] = TH1F(hname, '', nbin, 0, nbin)
+  htmp = cpv3hists[hname]
+  hnew = rebinHist(htmp, 20, rebinarray)
+  cpv3hists[hname] = hnew
+  cpv3hists[hname].SetFillColor(TColor.GetColor(colors[hname]))
+  cpv3hists[hname].SetLineWidth(0)
+
 weights = {}
 hmodels = {}
 hdatas = {}
@@ -278,6 +310,7 @@ for cat in cats:
   hmodel = fmat.Get('hs').Clone('hmodel_'+cat)
   hdata = fmat.Get('data_minus_bkg').Clone('hdata_'+cat) # subBkg
   hsig = fmat.Get('cl_VBF').Clone('hsig_'+cat) # subBkg
+  hbkgs = fmat.Get('cl_bkgs').Clone('hbkgs_'+cat) # subBkg
 
   hmodels[cat] = hmodel
   hdatas[cat] = hdata
@@ -296,6 +329,7 @@ for cat in cats:
 
   mhfdata.Add(hdata, weight)
   mhfsig.Add(hsig, weight)
+  mhfbkgs.Add(hbkgs, weight)
 
   for hname in procs:
     htmp = fmat.Get('cl_'+hname)
@@ -309,6 +343,14 @@ for cat in cats:
   hcpv2 = fcpv2.Get('cl_VBF').Clone('hsig_'+cat) # subBkg
   mhfcpv2.Add(hcpv2, weight)
 
+  fcpv3 = TFile("plotsPostfit/plotMaterials_"+cat+"_m07_SW_subBkg.root", 'read') # subBkg
+  for hname in procs:
+    htmp = fcpv3.Get('cl_'+hname)
+    if hname == 'VBF': htmp.SetFillColorAlpha(0, 0)
+    cpv3hists[hname].Add(htmp, weight)
+  hcpv3 = fcpv3.Get('cl_VBF').Clone('hsig_'+cat) # subBkg
+  mhfcpv3.Add(hcpv3, weight)
+
 print 'data addup numbers:', mhfdata.GetSumOfWeights()
 
 for hname in procs:
@@ -321,31 +363,57 @@ for hname in procs:
   #print hname, 'addup numbers:', cpv2hists[hname].GetSumOfWeights()
 #hcpv2 = mhfmodelcpv2.GetStack().Last().Clone('hcpv2')
 mhfcpv2.SetLineColor(kViolet)
+mhfcpv2.SetLineStyle(kDashed)
 mhfcpv2.SetLineWidth(2)
 mhfcpv2.SetFillColorAlpha(0, 0)
 mhfcpv2.SetMarkerSize(0)
 
+mhfmodelcpv3 = THStack('mhfmodelcpv3', '')
+for hname in procs:
+  mhfmodelcpv3.Add(cpv3hists[hname])
+  #print hname, 'addup numbers:', cpv3hists[hname].GetSumOfWeights()
+#hcpv3 = mhfmodelcpv3.GetStack().Last().Clone('hcpv3')
+mhfcpv3.SetLineColor(kViolet+10)
+mhfcpv3.SetLineStyle(kDashed)
+mhfcpv3.SetLineWidth(2)
+mhfcpv3.SetFillColorAlpha(0, 0)
+mhfcpv3.SetMarkerSize(0)
+
 ############# below draw background subtracted mhfdata and dfmodel #############
 
 c.cd()
-pad2 = TPad("pad2", "pad2", 0, 0.25, 1, 0.45)
+pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.375)
 pad2.SetTopMargin(0)
-pad2.SetBottomMargin(0.03)
+pad2.SetBottomMargin(0.3)
 pad2.Draw()
 pad2.cd()
 
 ymax = mhfdata.GetMaximum()
-ymax = 1.6 * ymax
+ymax = 1.8 * ymax
 mhfsig.SetMaximum(ymax)
 mhfsig.SetMinimum(1e-2)
 
 mhfsig.SetFillColorAlpha(TColor.GetColor(colors['VBF']), 1)
 mhfsig.SetLineWidth(0)
-mhfsig.GetXaxis().SetLabelSize(0)
+mhfsig.GetXaxis().SetLabelSize(0.1)
+mhfsig.GetXaxis().SetTitleSize(0.1)
+mhfsig.GetXaxis().SetTitle('OO')
+mhfsig.GetYaxis().SetNdivisions(5, 5, 0)
+mhfsig.GetYaxis().SetLabelSize(0.1)
 mhfsig.Draw('hist')
 
+for ib in range(mhfbkgs.GetNbinsX()):
+  mhfbkgs.SetBinError(ib+1, 0)
+
+mfbkgserr = hfmodelerr.Clone()
+mfbkgserr.Add(mhfbkgs, -1)
+mfbkgserr.Draw('same e2')
+
 mhfcpv2.Draw('hist same')
-lg.AddEntry(mhfcpv2, 'VBF(#tilde{d}=0.07)', 'f')
+lg.AddEntry(mhfcpv2, 'VBF(#tilde{d}=+0.07)', 'f')
+
+mhfcpv3.Draw('hist same')
+lg.AddEntry(mhfcpv3, 'VBF(#tilde{d}=-0.07)', 'f')
 
 mhfdata.Draw('same e')
 
