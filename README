@@ -39,3 +39,12 @@ copy bkgSRFrac/bkgSRFrac_${dval}.txt to yield_sys/OOplot/
 3)postfit_OO.py and alter_postfit_OO.py => plotsPostfit/plotMaterials_*root
 4a)one can go to addupOOplot_subBkg.py and addupOOplot.py
 4b)one can go to integrateInPads.py
+
+=== OO shape comparison
+in yield_sys/OOplot/,
+1a)Nom_VBF.cxx
+1b)SMEFT_VBF.cxx
+1c)SMEFT_quad_VBF.cxx
+1d)w1_VBF.cxx
+2) 1a 1b => dtilde_vs_cHW.cxx or 1a 1b 1c => dtilde_vs_cHW_quad.cxx or 1a 1d => dtilde_vs_w1.cxx
+
