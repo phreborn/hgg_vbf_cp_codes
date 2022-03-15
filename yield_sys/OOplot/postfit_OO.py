@@ -217,6 +217,7 @@ for i in range(nbin):
   ## adding continuum process
   bkgyld = paras['nbkg_OO_'+catname][0] * bkgFracs[catname] # SWcut
   bkgquadrSysVar = abs(paras['nbkg_OO_'+catname][1])
+  bkgquadrSysVar = abs(paras['nbkg_OO_'+catname][1]) * (bkgFracs[catname]**0.5) # SWcut
   sampleList['background'].yld = bkgyld
   sampleList['background'].quadrSysVar = bkgquadrSysVar
   #print sampleList['background'].name, [sys.name for sys in sampleList['background'].syslist]
@@ -296,6 +297,8 @@ for i in range(nbin):
   binname = 'b'+str(i+1)
   sumyld = 0
   sumSqVar = 0
+  print ''
+  print '======', binname
   for proc in oobins[binname].values():
     if proc.name not in samples: continue
     hists[proc.name].GetXaxis().SetBinLabel(i+1, binlabels[i])
@@ -307,6 +310,8 @@ for i in range(nbin):
       quadrSysVar = pow(pow(quadrSysVar, 2) + pow(yldMuErr, 2), 0.5)
       yldhat *= paras[poiname][0]
       print 'VBF yield:', yldhat, 'variation by poi:',yldMuErr, 'variation by sys:', proc.quadrSysVar, 'tot variation: ', quadrSysVar
+    else:
+      print proc.name, 'yield:', yldhat, 'variation by sys:', proc.quadrSysVar, 'tot variation: ', quadrSysVar
     hists[proc.name].SetBinContent(i+1, yldhat)
     hists[proc.name].SetBinError(i+1, quadrSysVar)
 
