@@ -33,13 +33,13 @@ fillSys(){
   inf_para=$2
   ofsys=$3
  
-  resp_Prod="<Item Name=\"prod::resp_${para}("
+#  resp_Prod="<Item Name=\"prod::resp_${para}("
   resp_Prod_RW="<Item Name=\"prod::resp_${para}_RW("
   resp_Prod_Inj="<Item Name=\"prod::resp_${para}_${injectPoint}("
   
   if [ "${para}" == "SCALE" ];then
     echo "<Systematic Name=\"ATLAS_HIGGS_MASS\" Constr=\"gaus\" CentralValue=\"1\" Mag=\"0.0019\" WhereTo=\"shape\"/>" >> $ofsys
-    resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
+#    resp_Prod=${resp_Prod}"response::ATLAS_HIGGS_MASS,"
     resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_HIGGS_MASS,"
     resp_Prod_Inj=${resp_Prod_Inj}"response::ATLAS_HIGGS_MASS,"
   fi
@@ -58,7 +58,7 @@ fillSys(){
       continue
     fi
 
-    resp_Prod=${resp_Prod}"response::ATLAS_${sys_name},"
+#    resp_Prod=${resp_Prod}"response::ATLAS_${sys_name},"
     resp_Prod_RW=${resp_Prod_RW}"response::ATLAS_${sys_name},"
     resp_Prod_Inj=${resp_Prod_Inj}"response::ATLAS_${sys_name},"
  
@@ -108,8 +108,8 @@ fillSys(){
   
   done
 
-  resp_Prod=${resp_Prod}")\"/>"
-  echo ${resp_Prod} >> $ofsys
+#  resp_Prod=${resp_Prod}")\"/>"
+#  echo ${resp_Prod} >> $ofsys
 
   resp_Prod_RW=${resp_Prod_RW}")\"/>"
   echo ${resp_Prod_RW} >> $ofsys
@@ -130,7 +130,7 @@ for d in  $d_tilde ; do
     ofxml="xml/shape_${d}_${cat}.xml"; #echo $ofxml
     > $ofxml
     fillSys RES $ifcsv_sigma $ofxml
-    echo "" >> $ofsys
+    echo "" >> $ofxml
     fillSys SCALE $ifcsv_mu $ofxml
   done
 done

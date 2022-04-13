@@ -8,6 +8,9 @@ SSAvailable=1
 injectTest=0
 injectPoint=p01
 
+# 0: no, 1: Asimov data exported for m00 workspace, 2: both SM syst and BSM syst
+unblindAsi=2
+
 tnum=0
 bkgFuncBias_Toy=0
 bkgFuncBias_Asi=0
@@ -51,7 +54,10 @@ for cat in $cats;do
   N_bkg=$(cat ${bkg_para} | grep "${cat}," | cut -d ',' -f 5); echo nbkg_${cat}_${N_bkg}
 
   sys_ggH=$(cat yield_sys/xml/sample_343981_SM_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
-  sys_VBF_SM=$(cat yield_sys/xml/sample_346214_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys})
+
+  sys_ggH_SM=$(cat yield_sys/xml/sample_343981_SM_${cat}.xml | sed 's/ /\?/g' | grep ${preSys} | sed 's/ATLAS_/ATLAS_SM_/g')
+  sys_VBF_SM=$(cat yield_sys/xml/sample_346214_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys} | sed 's/ATLAS_/ATLAS_SM_/g')
+  sys_shape_SM=$(cat shape_sys/xml/shape_m00_${cat}.xml | sed 's/ /\?/g' | grep ${preSys} | sed 's/ATLAS_/ATLAS_SM_/g' | sed 's/_RW//g')
 
   spurious=$(cat ${basepath}/shape/bkg_SS.csv | grep ${cat} | cut -d , -f 3)
 
@@ -88,6 +94,10 @@ for cat in $cats;do
         hname=toy_${cat}_${tnum}
       fi
       echo "  <Data InputFile=\"Input_toys/tree_bfBias_${tfix}.root\" FileType=\"histogram\" HistName=\"${hname}\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\"/>" >> $out_xml
+    elif [ ${unblindAsi} -eq 1 ];then
+      hname=${cat}
+      # use WSBuilder/workspaceCombiner/vbfcpComb/exportAsimov.cxx to export Asimov data from m00 workspace
+      echo "  <Data InputFile=\"Input_unblindAsi/hist_unblind_Asi.root\" FileType=\"histogram\" HistName=\"${hname}\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\"/>" >> $out_xml
     else
       echo "  <Data InputFile=\"Input/data/tree_data_OO_${cat}.root\" FileType=\"root\" TreeName=\"CollectionTree\" VarName=\"m_yy\" Observable=\"atlas_invMass_:category:[105000,160000]\" Binning=\"220\" InjectGhost=\"true\" BlindRange=\"120000,130000\"/>" >> $out_xml
     fi
@@ -111,6 +121,10 @@ for cat in $cats;do
       echo "  $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
     done
     echo "" >> $out_xml
+    for sys in $sys_shape_SM;do
+      echo "  $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
+    done
+    echo "" >> $out_xml
     else
       echo "  <Item Name=\"prod::resp_RES(one[1],)\"/>" >> $out_xml
       echo "  <Item Name=\"prod::resp_RES_RW(one,)\"/>" >> $out_xml
@@ -122,11 +136,11 @@ for cat in $cats;do
 
 ### here m00 in "config/vbf_cp_m00" could be changed to the WS point
     echo "  <Sample Name=\"VBF_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
-    #if [ $includeSys -eq 1 ];then
-    #for sys in $sys_VBF_SM;do
-    #  echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
-    #done
-    #fi
+    if [ $includeSys -eq 1 -a ${unblindAsi} -eq 2 ];then
+    for sys in $sys_VBF_SM;do
+      echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
+    done
+    fi
     echo "    <NormFactor Name=\"yield_VBF_SM[${y_VBF_SM}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_VBF_SM[1]\" />" >> $out_xml
@@ -134,11 +148,25 @@ for cat in $cats;do
     echo "" >> $out_xml
 
     echo "  <Sample Name=\"ggH_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig\">" >> $out_xml
+    if [ $includeSys -eq 1 -a ${unblindAsi} -eq 2 ];then
+    for sys in $sys_ggH_SM;do
+      echo "    $(echo ${sys} | sed 's/\?/ /g')" >> $out_xml
+    done
+    fi
     echo "    <NormFactor Name=\"yield_ggH_SM[${y_ggH}]\"/>" >> $out_xml
     echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
     echo "    <NormFactor Name=\"mu_ggH_SM[1]\" />" >> $out_xml # can be used for turn on/off a process
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
+
+    if [ $includeSys -eq 1 -a ${SSAvailable} -eq 1 -a ${unblindAsi} -eq 2 ];then
+    echo "  <Sample Name=\"spurious_SM\" InputFile=\"config/vbf_cp_m00/model/signal_:category:_Asi.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSig\">" >> $out_xml
+    echo "    <Systematic Name=\"ATLAS_SM_Hgg_BIAS_:category:\" Constr=\"gaus\" CentralValue=\"0\" Mag=\"${spurious}\" WhereTo=\"yield\"/>" >> $out_xml
+    echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+    echo "    <NormFactor Name=\"mu_spur_SM[1]\" />" >> $out_xml
+    echo "  </Sample>" >> $out_xml
+    echo "" >> $out_xml
+    fi
 
     if [ $injectTest -eq 1 ];then
       echo "  <Sample Name=\"VBF_${injectPoint}\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:_${injectPoint}Asi.xml\" ImportSyst=\":common:\" MultiplyLumi=\"true\" SharePdf=\"commonSig${injectPoint}\">" >> $out_xml
@@ -183,6 +211,8 @@ for cat in $cats;do
     if [ $includeSys -eq 1 -a ${SSAvailable} -eq 1 ];then
     echo "  <Sample Name=\"spurious\" InputFile=\"config/vbf_cp_${d}/model/signal_:category:.xml\" ImportSyst=\":self:\" MultiplyLumi=\"false\" SharePdf=\"commonSigRW\">" >> $out_xml
     echo "    <Systematic Name=\"ATLAS_Hgg_BIAS_:category:\" Constr=\"gaus\" CentralValue=\"0\" Mag=\"${spurious}\" WhereTo=\"yield\"/>" >> $out_xml
+    echo "    <NormFactor Name=\"mu[1,0,5]\" />" >> $out_xml
+    echo "    <NormFactor Name=\"mu_spur[1]\" />" >> $out_xml
     echo "  </Sample>" >> $out_xml
     echo "" >> $out_xml
     fi
