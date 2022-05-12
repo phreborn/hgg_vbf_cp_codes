@@ -11,6 +11,7 @@ echo ${!mapD_tilde[*]}
 echo ${!mapID[*]}
 
 cats=(TT TL LT LL)
+cats=(TT TL LT)
 
 transfer(){
   inf=$1
@@ -52,6 +53,7 @@ transfer(){
 }
 
 infiles=`ls ${inpath} | grep txt`
+infiles=`ls ${inpath} | grep txt | grep -v LL`
 
 for inf in $infiles
 do

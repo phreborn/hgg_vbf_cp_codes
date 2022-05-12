@@ -1,6 +1,7 @@
 #! /bin/bash
 
 inpath=/scratchfs/atlas/huirun/atlaswork/VBF_CP/syst/yield_sys/TheorySys/Shower_updatedBDT
+inpath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/
 
 transfer(){
   inf=$1
@@ -9,6 +10,7 @@ transfer(){
   bdtCat=$4
 
   sampleName=$(echo ${inf} | cut -d _ -f 1)
+  sampleName=$(echo ${inf} | cut -d / -f 2 | cut -d _ -f 1)
 
   sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b1.csv
   sed -i '/shower_/d' ./mag_theory_${sampleID}_${d_tilde}_${bdtCat}_b2.csv
@@ -48,12 +50,14 @@ transfer(){
 
 ds=$(ls mag_theory_346214_*_TT_b1.csv | cut -d _ -f 4)
 cats=$(ls mag_theory_346214_m00_*_b1.csv | cut -d _ -f 5)
+cats=$(ls mag_theory_346214_m00_*_b1.csv | cut -d _ -f 5 | grep -v LL)
 
 for c in ${cats};do
   bdtCat=${c}
 
   #ggF
   inf=ggF_showerSys_${c}_d0.txt
+  inf=shower_sys/ggF_showerSys_${c}_d0.txt
   sampleID=343981
   d_tilde=SM
   echo "$sampleID $d_tilde ${bdtCat}"
@@ -61,6 +65,7 @@ for c in ${cats};do
 
   #VBF
   inf=VBF_showerSys_${c}_d0.txt
+  inf=shower_220427/VBF_showerSys_${c}_d0.txt
   sampleID=346214
   for d in ${ds};do
     d_tilde=${d}

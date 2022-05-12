@@ -201,6 +201,7 @@ for i in range(nbin):
   sampleList = {}
   for proc in xroot.iter('Sample'):
     procname = proc.attrib['Name']
+    importSys = proc.attrib['ImportSyst']
     sysList = []
     yld = 0.
     for child in proc:
@@ -215,7 +216,7 @@ for i in range(nbin):
       constr = child.attrib['Constr']
       sys = Syst(name, constr, central, *mag)
       sysList.append(sys)
-    sysList.extend(commonSyst)
+    if ':common:' in importSys: sysList.extend(commonSyst)
     sample = Sample(procname, yld, sysList)
 #    sample.implementPostResult(paras);
     sampleList[procname] = sample

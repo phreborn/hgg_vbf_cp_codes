@@ -115,7 +115,7 @@ for cat in cats:
     htmp = fmat.Get('cl_'+hname)
     bkghists[hname].Add(htmp, weight)
 
-  fcpv1 = TFile("plotsPostfit/plotMaterials_"+cat+"_p07_SW.root", 'read')
+  fcpv1 = TFile("plotsPostfit/plotMaterials_"+cat+"_p06_SW.root", 'read')
   for hname in procs:
     htmp = fcpv1.Get('cl_'+hname)
     if hname == 'VBF': htmp.SetFillColorAlpha(0, 0)
@@ -335,7 +335,7 @@ for cat in cats:
     htmp = fmat.Get('cl_'+hname)
     mbkghists[hname].Add(htmp, weight)
 
-  fcpv2 = TFile("plotsPostfit/plotMaterials_"+cat+"_p07_SW_subBkg.root", 'read') # subBkg
+  fcpv2 = TFile("plotsPostfit/plotMaterials_"+cat+"_p06_SW_subBkg.root", 'read') # subBkg
   for hname in procs:
     htmp = fcpv2.Get('cl_'+hname)
     if hname == 'VBF': htmp.SetFillColorAlpha(0, 0)
@@ -343,7 +343,7 @@ for cat in cats:
   hcpv2 = fcpv2.Get('cl_VBF').Clone('hsig_'+cat) # subBkg
   mhfcpv2.Add(hcpv2, weight)
 
-  fcpv3 = TFile("plotsPostfit/plotMaterials_"+cat+"_m07_SW_subBkg.root", 'read') # subBkg
+  fcpv3 = TFile("plotsPostfit/plotMaterials_"+cat+"_m06_SW_subBkg.root", 'read') # subBkg
   for hname in procs:
     htmp = fcpv3.Get('cl_'+hname)
     if hname == 'VBF': htmp.SetFillColorAlpha(0, 0)
@@ -410,10 +410,10 @@ mfbkgserr.Add(mhfbkgs, -1)
 mfbkgserr.Draw('same e2')
 
 mhfcpv2.Draw('hist same')
-lg.AddEntry(mhfcpv2, 'VBF(#tilde{d}=+0.07)', 'f')
+lg.AddEntry(mhfcpv2, 'VBF(#tilde{d}=+0.06)', 'f')
 
 mhfcpv3.Draw('hist same')
-lg.AddEntry(mhfcpv3, 'VBF(#tilde{d}=-0.07)', 'f')
+lg.AddEntry(mhfcpv3, 'VBF(#tilde{d}=-0.06)', 'f')
 
 mhfdata.Draw('same e')
 

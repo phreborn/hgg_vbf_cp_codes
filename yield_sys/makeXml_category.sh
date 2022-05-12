@@ -2,7 +2,7 @@
 
 basepath=/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/yield/
 
-declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["aS"]="logn" ["shower"]="gaus" ["rest_Higgs"]="gaus" ["mcstat"]="logn")
+declare -A mapCtrType=(["EG"]="logn" ["PH"]="logn" ["FT"]="asym" ["JET"]="asym" ["MET"]="asym" ["PRW"]="asym" ["pdf"]="logn" ["qcd"]="logn" ["alphaS"]="logn" ["shower"]="gaus" ["rest_Higgs"]="gaus" ["mcstat"]="logn")
 echo ${!mapCtrType[*]}
 
 cats=$(cat ../../nom_WS/cats.cfg | grep -v "#" | grep ":" | cut -d ":" -f 1)

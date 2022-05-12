@@ -3,6 +3,17 @@
 
 import fileinput
 
+aSpath="/publicfs/atlas/atlasnew/higgs/hgg/chenhr/vbfcp/syst/theory/TheorySys_updatedBDT_stxs_as/"
+
+def transfDtilde(sname):
+  if sname == 'm00' or sname == 'SM': return '0'
+  elif sname.startswith('m'):
+    if sname.endswith('0'): sname = sname[:-1]
+    return '-0.%s'%(sname.replace('m', ''))
+  elif sname.startswith('p'):
+    if sname.endswith('0'): sname = sname[:-1]
+    return '0.%s'%(sname.replace('p', ''))
+
 ggF_qcd_NPs=["_mu",
 "_res",
 "_mig01",
@@ -21,7 +32,7 @@ ggF_qcd_NPs=["_mu",
 "_pTHj_over_pTH",
 "_mu_highpTH",
 "_mTop_scheme",
-"_Acc ",
+"_Acc",
 ]
 
 VBF_qcd_NPs=["_mu",
@@ -80,29 +91,52 @@ dvals = ['m00',
 'p20',
 ]
 mcid = '346214'
+sample = 'VBF'
 
 bdtcats = ['TT', 'TL', 'LT']
 oobins = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']
 
 dvals = ['SM']
 mcid = '343981'
+sample = 'ggF'
 for d in dvals:
   for cat in bdtcats:
+
+    fdname = transfDtilde(d)
+    inaS = aSpath + "%s_theorySys_%s_d%s.txt"%(sample, cat, fdname)
+    #print inaS
+    aSsysnums = []
+    with open(inaS, 'r') as f:
+      for l in f.readlines():
+        if 'aS1' in l : aSsysnums = l.replace(' ', '').split(',')[1:]
+
     for b in oobins:
       fname = "mag_theory_%s_%s_%s_%s.csv"%(mcid, d, cat, b)
       print fname
+#### qcd rename ####
+#      with open(fname, 'r') as f:
+#        txt = f.read()
+#        i = 0
+#        if mcid == '346214':
+#          for np in VBF_qcd_NPs:
+#            i += 1
+#            txt = txt.replace('qcd%i_VBF'%(i), 'qcd_VBF%s'%(np))
+#        elif mcid == '343981':
+#          for np in ggF_qcd_NPs:
+#            i += 1
+#            txt = txt.replace('qcd%i_ggF'%(i), 'qcd_ggF%s'%(np))
+##        print txt
+#
+#      with open(fname, 'w') as f:
+#        f.write(txt)
+
+#### alphaS ####
+
+      syslines = []
       with open(fname, 'r') as f:
-        txt = f.read()
-        i = 0
-        if mcid == '346214':
-          for np in VBF_qcd_NPs:
-            i += 1
-            txt = txt.replace('qcd%i_VBF'%(i), 'qcd_VBF%s'%(np))
-        elif mcid == '343981':
-          for np in ggF_qcd_NPs:
-            i += 1
-            txt = txt.replace('qcd%i_ggF'%(i), 'qcd_ggF%s'%(np))
-#        print txt
-      
+        for line in f.readlines():
+          if 'aS' not in line: syslines.append(line)
+      syslines.append('alphaS,%s'%(aSsysnums[oobins.index(b)]))
+
       with open(fname, 'w') as f:
-        f.write(txt)
+        for line in syslines: f.write(line)
