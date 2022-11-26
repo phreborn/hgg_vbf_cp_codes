@@ -139,7 +139,7 @@ binlabels = ['-99:-2', '-2:-1', '-1:0', '0:1', '1:2', '2:99']
 nbin = len(binlabels)
 
 doRebin = result.rebin
-xrebins = [-10, -2, -1, 0, 1, 2, 10]
+xrebins = [-6, -2, -1, 0, 1, 2, 6]
 
 rebinarray = array('d')
 for edge in xrebins:

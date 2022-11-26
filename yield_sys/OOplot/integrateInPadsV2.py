@@ -58,6 +58,18 @@ def rebinHist(hist, oriNbin, rebinArray):
 
   return reh.Clone(hist.GetName())
 
+def rebinIntegral(hist, rebinArray):
+  nbins = hist.GetNbinsX()
+  nbinsA = len(rebinArray)
+  if nbins != nbinsA-1: print "WARING!!! in rebinIntegral()"
+
+  integral = 0
+  for ib in range(nbins):
+    xint = rebinArray[ib+1]-rebinArray[ib]
+    integral += hist.GetBinContent(ib+1)*xint
+
+  return integral
+
 hfmodel = THStack('hfmodel', '')
 hfdata = TH1F('hfdata', '', nbin, 0, nbin)
 hdatatmp = hfdata
@@ -99,6 +111,8 @@ for cat in cats:
 
   nbkg = fmat.Get('cl_bkgs').GetSumOfWeights()
   nsig = fmat.Get('cl_VBF').GetSumOfWeights()
+  nbkg = rebinIntegral(fmat.Get('cl_bkgs'), rebinarray)
+  nsig = rebinIntegral(fmat.Get('cl_VBF'), rebinarray)
   weight = math.log(1+nsig/nbkg)
   print '======= %s ======='%(cat)
   print '%s ln(1+%0.2f/%0.2f) = %0.3f'%(cat, nsig, nbkg, weight)
@@ -317,6 +331,8 @@ for cat in cats:
 
   nbkg = fmat.Get('cl_bkgs').GetSumOfWeights()
   nsig = fmat.Get('cl_VBF').GetSumOfWeights()
+  nbkg = rebinIntegral(fmat.Get('cl_bkgs'), rebinarray)
+  nsig = rebinIntegral(fmat.Get('cl_VBF'), rebinarray)
   weight = math.log(1+nsig/nbkg)
   print '======= %s ======='%(cat)
   print '%s ln(1+%0.2f/%0.2f) = %0.3f'%(cat, nsig, nbkg, weight)
